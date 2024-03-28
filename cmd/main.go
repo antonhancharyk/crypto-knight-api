@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/antongoncharik/crypto-knight-api/internal/app"
+)
 
 func main() {
-	fmt.Println("hello")
+	app.Run()
 }
