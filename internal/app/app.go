@@ -1,39 +1,23 @@
 package app
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route"
+	"github.com/antongoncharik/crypto-knight-api/internal/database"
+	"github.com/antongoncharik/crypto-knight-api/internal/repository"
+	"github.com/antongoncharik/crypto-knight-api/internal/service"
 )
 
 func Run() {
-	route.Init().Run(":8080")
+	database.Connect()
+	defer database.Close()
 
-	// db, err := sqlx.Connect("postgres", "user=postgres dbname=yourdatabase sslmode=disable password=yourpassword host=localhost")
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
+	r := repository.NewRepository(database.Get())
+	s := service.NewService(r)
+	h := handler.NewHandler(s)
 
-	// defer db.Close()
-
-	// if err := db.Ping(); err != nil {
-	// 	log.Fatal(err)
-	// } else {
-	// 	log.Println("Successfully Connected")
-	// }
-
-	// type User struct {
-	// 	Name  string `db:"username"`
-	// 	Email string `db:"email"`
-	// }
-
-	// place := User{}
-
-	// rows, _ := db.Queryx("SELECT username, email FROM users")
-
-	// for rows.Next() {
-	// 	err := rows.StructScan(&place)
-	// 	if err != nil {
-	// 		log.Fatalln(err)
-	// 	}
-	// 	log.Printf("%#v\n", place)
-	// }
+	route.Init(h).Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 }

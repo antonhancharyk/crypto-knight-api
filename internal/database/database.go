@@ -1,20 +1,29 @@
 package database
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 var db *sqlx.DB
 
-func Connect(connectionString string) error {
-	var err error
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=yourdatabase sslmode=disable password=yourpassword host=localhost")
+func Connect() {
+	connectStr := fmt.Sprintf("user=%s dbname=%s sslmode=disable password=%s host=db", os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
+
+	conn, err := sqlx.Connect("postgres", connectStr)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	return db.Ping()
+	err = conn.Ping()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	db = conn
 }
 
 func Get() *sqlx.DB {
@@ -24,10 +33,3 @@ func Get() *sqlx.DB {
 func Close() {
 	db.Close()
 }
-
-// Test the connection to the database
-// if err := db.Ping(); err != nil {
-// 	log.Fatal(err)
-// } else {
-// 	log.Println("Successfully Connected")
-// }

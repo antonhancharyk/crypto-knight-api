@@ -1,18 +1,24 @@
 package common
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/antongoncharik/crypto-knight-api/internal/service"
+	"github.com/gin-gonic/gin"
+)
 
 type Common struct {
+	ser *service.Service
 }
 
-func NewCommon() *Common {
-	return &Common{}
+func NewCommon(ser *service.Service) *Common {
+	return &Common{ser}
 }
 
-func (cm Common) On(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "On"})
+func (c *Common) On(ctx *gin.Context) {
+	c.ser.On()
+	ctx.Status(200)
 }
 
-func (cm Common) Off(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "Off"})
+func (c *Common) Off(ctx *gin.Context) {
+	c.ser.Off()
+	ctx.Status(200)
 }
