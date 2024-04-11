@@ -12,6 +12,6 @@ WORKDIR /opt/app
 
 COPY --from=builder /opt/app/crypto-knight-api /opt/app/crypto-knight-api
 
-EXPOSE 8080
+EXPOSE 8080 50051
 
 CMD ["./crypto-knight-api"]

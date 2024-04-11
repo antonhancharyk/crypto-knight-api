@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/proto/common";
+
+message EmptyRequest {
+}
+
+message Enabled {
+  bool enabled = 1;
+}
+
+service CommonService {
+  rpc GetStatus (EmptyRequest) returns (Enabled) {};
+}

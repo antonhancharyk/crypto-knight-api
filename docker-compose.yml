@@ -39,6 +39,7 @@ services:
       - ./.env
     ports:
       - "${APP_PORT}:${APP_PORT}"
+      - "${APP_PORT_GRPC}:${APP_PORT_GRPC}"
     depends_on:
       migrator:
         condition: service_completed_successfully      
