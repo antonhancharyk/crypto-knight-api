@@ -8,6 +8,6 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route"
 )
 
-func RunHTTP(h *handler.Handler) {
-	route.Init(h).Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+func RunHTTP(hdl *handler.Handler) {
+	route.Init(hdl).Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 }

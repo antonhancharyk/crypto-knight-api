@@ -7,6 +7,7 @@ import (
 )
 
 type Common interface {
+	GetStatus(c *gin.Context)
 	On(c *gin.Context)
 	Off(c *gin.Context)
 }
@@ -15,8 +16,8 @@ type Handler struct {
 	Common
 }
 
-func NewHandler(ser *service.Service) *Handler {
+func NewHandler(svc *service.Service) *Handler {
 	return &Handler{
-		Common: common.NewCommon(ser),
+		Common: common.NewCommon(svc),
 	}
 }

@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init(h *handler.Handler) *gin.Engine {
+func Init(hdl *handler.Handler) *gin.Engine {
 	router := gin.Default()
 
-	common.UseCommonRoutes(router, h)
+	common.UseCommonRoutes(router, hdl)
 
 	return router
 }

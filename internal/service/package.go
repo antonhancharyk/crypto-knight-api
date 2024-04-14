@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/service/common"
+	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/pb/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 )
@@ -18,8 +18,8 @@ type Service struct {
 	Common
 }
 
-func NewService(rep *repository.Repository) *Service {
+func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Common: common.NewCommon(rep),
+		Common: common.NewCommon(repo),
 	}
 }

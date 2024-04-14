@@ -8,6 +8,7 @@ import (
 type Common interface {
 	On()
 	Off()
+	GetStatus() bool
 }
 
 type Repository struct {
