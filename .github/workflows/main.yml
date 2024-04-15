@@ -49,5 +49,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "${{ secrets.ENV_FILE }}" > ./${{ env.IMAGE_NAME }}/.env
-            # docker-compose down
-            # docker-compose up -d
+            docker-compose down
+            docker-compose up -d
