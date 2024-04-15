@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           # source: "./docker-compose.yml ./internal/migrations ./internal/config"
-          source: "./docker-compose.yml"
+          source: "./docker-compose.yml,./internal/migrations"
           target: "./"
 
       # - name: Run all services
