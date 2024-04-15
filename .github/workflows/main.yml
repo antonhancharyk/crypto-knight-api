@@ -39,17 +39,17 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./docker-compose.yml"
+          source: "./docker-compose.yml ./internal/migrations ./internal/config"
           target: "./"
 
-      - name: Run all services
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "${{ secrets.ENV_FILE }}" > .env
-            docker-compose down
-            docker-compose up -d
-            # rm -f .env
+      # - name: Run all services
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       echo "${{ secrets.ENV_FILE }}" > .env
+      #       docker-compose down
+      #       docker-compose up -d
+      #       rm -f .env
