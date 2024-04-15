@@ -30,7 +30,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./migrations:/migrations
+      - ./internal/migrations:/migrations
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
   app:
@@ -53,7 +53,7 @@ services:
       - "80:80"
     restart: always
     volumes:
-      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./internal/config/nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - app
 
