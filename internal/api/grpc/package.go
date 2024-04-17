@@ -1,6 +1,8 @@
 package grpc
 
 import (
+	"context"
+	"fmt"
 	"log"
 
 	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/pb/common"
@@ -22,6 +24,9 @@ func Connect() {
 
 	clientConn = conn
 	gRPCClients = &GRPCClients{Common: pbCommon.NewCommonServiceClient(clientConn)}
+	fmt.Println("HELLO")
+	Get().Common.SwitchOn(context.Background(), &pbCommon.EmptyRequest{})
+	fmt.Println("HELLO 2")
 }
 
 func Get() *GRPCClients {
