@@ -5,10 +5,10 @@ option go_package = "github.com/antongoncharik/crypto-knight-api/internal/api/gr
 message EmptyRequest {
 }
 
-message Enabled {
-  bool enabled = 1;
+message EmptyResponse {
 }
 
 service CommonService {
-  rpc GetStatus (EmptyRequest) returns (Enabled) {};
+  rpc SwitchOn (EmptyRequest) returns (EmptyResponse) {};
+  rpc SwitchOff (EmptyRequest) returns (EmptyResponse) {};
 }

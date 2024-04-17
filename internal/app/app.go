@@ -13,14 +13,12 @@ func Run() {
 	database.Connect()
 	defer database.Close()
 
-	db := database.Get()
+	grpc.Connect()
+	defer grpc.Close()
 
-	repo := repository.NewRepository(db)
+	repo := repository.NewRepository(database.Get())
 	svc := service.NewService(repo)
 	hdl := handler.NewHandler(svc)
 
-	go grpc.RunGRPC(svc)
-	go http.RunHTTP(hdl)
-
-	select {}
+	http.RunHTTP(hdl)
 }

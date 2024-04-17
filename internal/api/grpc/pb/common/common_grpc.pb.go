@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CommonService_GetStatus_FullMethodName = "/CommonService/GetStatus"
+	CommonService_SwitchOn_FullMethodName  = "/CommonService/SwitchOn"
+	CommonService_SwitchOff_FullMethodName = "/CommonService/SwitchOff"
 )
 
 // CommonServiceClient is the client API for CommonService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommonServiceClient interface {
-	GetStatus(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*Enabled, error)
+	SwitchOn(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	SwitchOff(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
 }
 
 type commonServiceClient struct {
@@ -37,9 +39,18 @@ func NewCommonServiceClient(cc grpc.ClientConnInterface) CommonServiceClient {
 	return &commonServiceClient{cc}
 }
 
-func (c *commonServiceClient) GetStatus(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*Enabled, error) {
-	out := new(Enabled)
-	err := c.cc.Invoke(ctx, CommonService_GetStatus_FullMethodName, in, out, opts...)
+func (c *commonServiceClient) SwitchOn(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, CommonService_SwitchOn_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *commonServiceClient) SwitchOff(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, CommonService_SwitchOff_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +61,8 @@ func (c *commonServiceClient) GetStatus(ctx context.Context, in *EmptyRequest, o
 // All implementations must embed UnimplementedCommonServiceServer
 // for forward compatibility
 type CommonServiceServer interface {
-	GetStatus(context.Context, *EmptyRequest) (*Enabled, error)
+	SwitchOn(context.Context, *EmptyRequest) (*EmptyResponse, error)
+	SwitchOff(context.Context, *EmptyRequest) (*EmptyResponse, error)
 	mustEmbedUnimplementedCommonServiceServer()
 }
 
@@ -58,8 +70,11 @@ type CommonServiceServer interface {
 type UnimplementedCommonServiceServer struct {
 }
 
-func (UnimplementedCommonServiceServer) GetStatus(context.Context, *EmptyRequest) (*Enabled, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStatus not implemented")
+func (UnimplementedCommonServiceServer) SwitchOn(context.Context, *EmptyRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SwitchOn not implemented")
+}
+func (UnimplementedCommonServiceServer) SwitchOff(context.Context, *EmptyRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SwitchOff not implemented")
 }
 func (UnimplementedCommonServiceServer) mustEmbedUnimplementedCommonServiceServer() {}
 
@@ -74,20 +89,38 @@ func RegisterCommonServiceServer(s grpc.ServiceRegistrar, srv CommonServiceServe
 	s.RegisterService(&CommonService_ServiceDesc, srv)
 }
 
-func _CommonService_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommonService_SwitchOn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommonServiceServer).GetStatus(ctx, in)
+		return srv.(CommonServiceServer).SwitchOn(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CommonService_GetStatus_FullMethodName,
+		FullMethod: CommonService_SwitchOn_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommonServiceServer).GetStatus(ctx, req.(*EmptyRequest))
+		return srv.(CommonServiceServer).SwitchOn(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CommonService_SwitchOff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommonServiceServer).SwitchOff(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommonService_SwitchOff_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommonServiceServer).SwitchOff(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +133,12 @@ var CommonService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CommonServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetStatus",
-			Handler:    _CommonService_GetStatus_Handler,
+			MethodName: "SwitchOn",
+			Handler:    _CommonService_SwitchOn_Handler,
+		},
+		{
+			MethodName: "SwitchOff",
+			Handler:    _CommonService_SwitchOff_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

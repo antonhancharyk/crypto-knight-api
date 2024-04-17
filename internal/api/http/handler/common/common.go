@@ -1,13 +1,10 @@
 package common
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
-
-	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/pb/common"
 )
 
 type Common struct {
@@ -19,10 +16,10 @@ func NewCommon(svc *service.Service) *Common {
 }
 
 func (c *Common) GetStatus(ctx *gin.Context) {
-	res, _ := c.svc.GetStatus(context.Background(), &pbCommon.EmptyRequest{})
+	status := c.svc.GetStatus()
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"enabled": res.Enabled,
+		"enabled": status,
 	})
 }
 

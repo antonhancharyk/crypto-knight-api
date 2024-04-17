@@ -36,11 +36,12 @@ services:
   app:
     container_name: app
     image: antgoncharik/crypto-knight-api
+    # build:
+      # .
     env_file:
       - ./.env
     ports:
       - "${APP_PORT}:${APP_PORT}"
-      - "${APP_PORT_GRPC}:${APP_PORT_GRPC}"
     restart: always
     depends_on:
       migrator:

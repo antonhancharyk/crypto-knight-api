@@ -1,31 +1,33 @@
 package grpc
 
 import (
-	"fmt"
 	"log"
-	"net"
-	"os"
 
 	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/pb/common"
-	"github.com/antongoncharik/crypto-knight-api/internal/service"
-	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"google.golang.org/grpc"
 )
 
-func RunGRPC(s *service.Service) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("APP_PORT_GRPC")))
+type GRPCClients struct {
+	Common pbCommon.CommonServiceClient
+}
+
+var gRPCClients *GRPCClients
+var clientConn *grpc.ClientConn
+
+func Connect() {
+	conn, err := grpc.Dial("113.30.189.245:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("did not connect: %v", err)
 	}
 
-	srv := grpc.NewServer()
+	clientConn = conn
+	gRPCClients = &GRPCClients{Common: pbCommon.NewCommonServiceClient(clientConn)}
+}
 
-	pbCommon.RegisterCommonServiceServer(srv, s.Common.(*common.Common))
+func Get() *GRPCClients {
+	return gRPCClients
+}
 
-	log.Printf("Server listening on port %s", os.Getenv("APP_PORT_GRPC"))
-
-	err = srv.Serve(lis)
-	if err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+func Close() {
+	clientConn.Close()
 }
