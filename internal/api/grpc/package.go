@@ -1,7 +1,6 @@
 package grpc
 
 import (
-	"context"
 	"fmt"
 	"log"
 
@@ -26,9 +25,8 @@ func Connect() {
 
 	clientConn = conn
 	gRPCClients = &GRPCClients{Common: pbCommon.NewCommonServiceClient(clientConn)}
+
 	fmt.Println("HELLO 2")
-	Get().Common.SwitchOn(context.Background(), &pbCommon.EmptyRequest{})
-	fmt.Println("HELLO 3")
 }
 
 func Get() *GRPCClients {
