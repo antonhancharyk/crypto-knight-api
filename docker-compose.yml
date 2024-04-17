@@ -35,7 +35,7 @@ services:
 
   app:
     container_name: app
-    image: antgoncharik/crypto-knight-api:latest
+    image: antgoncharik/crypto-knight-api
     # build:
       # .
     env_file:

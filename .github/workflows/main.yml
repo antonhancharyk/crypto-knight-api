@@ -50,5 +50,7 @@ jobs:
           script: |
             echo "${{ secrets.ENV_FILE }}" > ./${{ env.IMAGE_NAME }}/.env
             cd ${{ env.IMAGE_NAME }}
+            docker login -u ${{ env.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             docker-compose down
             docker-compose up -d
