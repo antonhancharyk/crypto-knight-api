@@ -9,6 +9,6 @@ message EmptyResponse {
 }
 
 service CommonService {
-  rpc SwitchOn (EmptyRequest) returns (EmptyResponse) {};
-  rpc SwitchOff (EmptyRequest) returns (EmptyResponse) {};
+  rpc Enable (EmptyRequest) returns (EmptyResponse) {};
+  rpc Disable (EmptyRequest) returns (EmptyResponse) {};
 }

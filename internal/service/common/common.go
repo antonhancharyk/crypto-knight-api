@@ -22,17 +22,17 @@ func (c *Common) GetStatus() bool {
 	return c.repo.GetStatus()
 }
 
-func (c *Common) On() {
+func (c *Common) Enable() {
 	c.repo.On()
-	_, err := grpc.Get().Common.SwitchOn(context.Background(), &pbCommon.EmptyRequest{})
+	_, err := grpc.Get().Common.Enable(context.Background(), &pbCommon.EmptyRequest{})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 }
 
-func (c *Common) Off() {
+func (c *Common) Disable() {
 	c.repo.Off()
-	_, err := grpc.Get().Common.SwitchOff(context.Background(), &pbCommon.EmptyRequest{})
+	_, err := grpc.Get().Common.Disable(context.Background(), &pbCommon.EmptyRequest{})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

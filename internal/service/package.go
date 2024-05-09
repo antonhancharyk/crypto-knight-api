@@ -6,8 +6,8 @@ import (
 )
 
 type Common interface {
-	On()
-	Off()
+	Enable()
+	Disable()
 	GetStatus() bool
 }
 

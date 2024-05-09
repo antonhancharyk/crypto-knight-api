@@ -23,12 +23,12 @@ func (c *Common) GetStatus(ctx *gin.Context) {
 	})
 }
 
-func (c *Common) On(ctx *gin.Context) {
-	c.svc.On()
+func (c *Common) Enable(ctx *gin.Context) {
+	c.svc.Enable()
 	ctx.Status(http.StatusOK)
 }
 
-func (c *Common) Off(ctx *gin.Context) {
-	c.svc.Off()
+func (c *Common) Disable(ctx *gin.Context) {
+	c.svc.Disable()
 	ctx.Status(http.StatusOK)
 }

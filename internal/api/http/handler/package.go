@@ -8,8 +8,8 @@ import (
 
 type Common interface {
 	GetStatus(c *gin.Context)
-	On(c *gin.Context)
-	Off(c *gin.Context)
+	Enable(c *gin.Context)
+	Disable(c *gin.Context)
 }
 
 type Handler struct {
