@@ -3,15 +3,14 @@ module github.com/antongoncharik/crypto-knight-api
 go 1.22.0
 
 require (
+	github.com/antongoncharik/crypto-knight-protos v1.0.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	google.golang.org/grpc v1.63.0
-	google.golang.org/protobuf v1.33.0
 )
 
 require (
-	github.com/antongoncharik/crypto-knight-protos v1.0.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
@@ -35,5 +34,6 @@ require (
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240401170217-c3f982113cda // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
