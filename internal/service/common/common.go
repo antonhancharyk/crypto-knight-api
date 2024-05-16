@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
-	pbCommon "github.com/antongoncharik/crypto-knight-api/internal/api/grpc/pb/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
+	pbCommon "github.com/antongoncharik/crypto-knight-protos/gen/go/common"
 )
 
 type Common struct {

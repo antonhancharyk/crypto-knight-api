@@ -30,7 +30,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./internal/migrations:/migrations
+      - ./migrations:/migrations
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
   app:
