@@ -1,8 +1,10 @@
 package service
 
 import (
+	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
+	"github.com/antongoncharik/crypto-knight-api/internal/service/tracks"
 )
 
 type Common interface {
@@ -11,12 +13,19 @@ type Common interface {
 	GetStatus() bool
 }
 
-type Service struct {
-	Common
+type Tracks interface {
+	GetAll() []track.Track
+	Create(track track.Track)
 }
 
-func NewService(repo *repository.Repository) *Service {
+type Service struct {
+	Common
+	Tracks
+}
+
+func New(repo *repository.Repository) *Service {
 	return &Service{
-		Common: common.NewCommon(repo),
+		Common: common.New(repo),
+		Tracks: tracks.New(repo),
 	}
 }

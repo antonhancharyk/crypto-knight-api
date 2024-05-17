@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS tracks (
+    id SERIAL PRIMARY KEY,
+    symbol VARCHAR(255) NOT NULL,
+    high_price NUMERIC NOT NULL,
+    low_price NUMERIC NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER tracks_update_trigger
+BEFORE UPDATE ON tracks
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

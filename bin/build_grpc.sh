@@ -1,2 +1,0 @@
-#!/bin/bash
-protoc -I ./internal/api/grpc/proto/common --go_out=./internal/api/grpc/pb/common --go_opt=paths=source_relative --go-grpc_out=./internal/api/grpc/pb/common --go-grpc_opt=paths=source_relative ./internal/api/grpc/proto/common/common.proto

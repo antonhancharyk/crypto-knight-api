@@ -14,16 +14,16 @@ type Common struct {
 	pbCommon.UnimplementedCommonServiceServer
 }
 
-func NewCommon(repo *repository.Repository) *Common {
+func New(repo *repository.Repository) *Common {
 	return &Common{repo: repo}
 }
 
 func (c *Common) GetStatus() bool {
-	return c.repo.GetStatus()
+	return c.repo.Common.GetStatus()
 }
 
 func (c *Common) Enable() {
-	c.repo.On()
+	c.repo.Common.On()
 	_, err := grpc.Get().Common.Enable(context.Background(), &pbCommon.EmptyRequest{})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
@@ -31,7 +31,7 @@ func (c *Common) Enable() {
 }
 
 func (c *Common) Disable() {
-	c.repo.Off()
+	c.repo.Common.Off()
 	_, err := grpc.Get().Common.Disable(context.Background(), &pbCommon.EmptyRequest{})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)

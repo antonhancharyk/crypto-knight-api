@@ -14,7 +14,7 @@ type Common struct {
 	db *sqlx.DB
 }
 
-func NewCommon(db *sqlx.DB) *Common {
+func New(db *sqlx.DB) *Common {
 	return &Common{db: db}
 }
 

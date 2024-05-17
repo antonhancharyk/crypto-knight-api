@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/common"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/tracks"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -12,12 +13,19 @@ type Common interface {
 	Disable(c *gin.Context)
 }
 
-type Handler struct {
-	Common
+type Tracks interface {
+	GetAll(c *gin.Context)
+	Create(c *gin.Context)
 }
 
-func NewHandler(svc *service.Service) *Handler {
+type Handler struct {
+	Common
+	Tracks
+}
+
+func New(svc *service.Service) *Handler {
 	return &Handler{
-		Common: common.NewCommon(svc),
+		Common: common.New(svc),
+		Tracks: tracks.New(svc),
 	}
 }

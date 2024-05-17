@@ -16,9 +16,9 @@ func Run() {
 	grpc.Connect()
 	defer grpc.Close()
 
-	repo := repository.NewRepository(database.Get())
-	svc := service.NewService(repo)
-	hdl := handler.NewHandler(svc)
+	repo := repository.New(database.Get())
+	svc := service.New(repo)
+	hdl := handler.New(svc)
 
 	http.RunHTTP(hdl)
 }

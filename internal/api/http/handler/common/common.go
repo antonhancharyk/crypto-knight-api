@@ -11,7 +11,7 @@ type Common struct {
 	svc *service.Service
 }
 
-func NewCommon(svc *service.Service) *Common {
+func New(svc *service.Service) *Common {
 	return &Common{svc}
 }
 

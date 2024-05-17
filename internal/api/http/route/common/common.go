@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UseCommonRoutes(req *gin.Engine, hdl *handler.Handler) {
+func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
 	commonGroup := req.Group("/common")
 
 	commonGroup.GET("/status", hdl.Common.GetStatus)

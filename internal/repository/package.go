@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository/common"
+	"github.com/antongoncharik/crypto-knight-api/internal/repository/tracks"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -11,12 +13,19 @@ type Common interface {
 	GetStatus() bool
 }
 
-type Repository struct {
-	Common
+type Tracks interface {
+	GetAll() []track.Track
+	Create(track track.Track)
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+type Repository struct {
+	Common
+	Tracks
+}
+
+func New(db *sqlx.DB) *Repository {
 	return &Repository{
-		Common: common.NewCommon(db),
+		Common: common.New(db),
+		Tracks: tracks.New(db),
 	}
 }
