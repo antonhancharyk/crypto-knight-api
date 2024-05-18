@@ -13,10 +13,10 @@ func New(repo *repository.Repository) *Tracks {
 	return &Tracks{repo: repo}
 }
 
-func (t *Tracks) GetAll() []track.Track {
-	return t.repo.Tracks.GetAll()
+func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
+	return t.repo.Tracks.GetAll(queryParams)
 }
 
-func (t *Tracks) Create(track track.Track) {
-	t.repo.Tracks.Create(track)
+func (t *Tracks) Create(track track.Track) error {
+	return t.repo.Tracks.Create(track)
 }
