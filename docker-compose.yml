@@ -55,8 +55,19 @@ services:
     restart: always
     volumes:
       - ./internal/config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+      - ./certs:/var/www/certbot
     depends_on:
       - app
+      - certbot
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./certs:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ant.goncharik.development@gmail.com --agree-tos --no-eff-email --force-renewal -d api.crypto-knight.online
 
 volumes:
   db_data:
