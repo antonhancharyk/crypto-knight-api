@@ -45,13 +45,13 @@ services:
       migrator:
         condition: service_completed_successfully      
 
-  certbot:
-    container_name: certbot
-    image: certbot/certbot
-    volumes:
-      - ./certs:/etc/letsencrypt
-      - ./certs:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email ant.goncharik.development@gmail.com --agree-tos --no-eff-email --force-renewal -d api.crypto-knight.online
+  # certbot:
+  #   container_name: certbot
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./certs:/etc/letsencrypt
+  #     - ./certs:/var/www/certbot
+  #   command: certonly --webroot --webroot-path=/var/www/certbot --email ant.goncharik.development@gmail.com --agree-tos --no-eff-email --force-renewal -d api.crypto-knight.online
 
   nginx:
     container_name: nginx
@@ -67,8 +67,8 @@ services:
     depends_on:
       app:
         condition: service_started
-      certbot:
-        condition: service_completed_successfully      
+      # certbot:
+      #   condition: service_completed_successfully      
 
 volumes:
   db_data:
