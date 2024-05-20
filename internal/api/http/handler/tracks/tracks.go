@@ -1,6 +1,7 @@
 package tracks
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -54,8 +55,10 @@ func (t *Tracks) GetAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println(res)
+	tracksData := []track.Track{}
 
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusOK, tracksData)
 }
 
 func (t *Tracks) Create(ctx *gin.Context) {
