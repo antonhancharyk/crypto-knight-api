@@ -1,6 +1,7 @@
 package tracks
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -19,6 +20,7 @@ func New(svc *service.Service) *Tracks {
 }
 
 func (t *Tracks) GetAll(ctx *gin.Context) {
+	fmt.Println("HELLO")
 	var queryParams track.QueryParams
 
 	err := ctx.ShouldBindQuery(&queryParams)
