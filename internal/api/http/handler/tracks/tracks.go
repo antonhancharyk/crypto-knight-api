@@ -1,6 +1,7 @@
 package tracks
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -50,6 +51,7 @@ func (t *Tracks) GetAll(ctx *gin.Context) {
 	}
 
 	res, err := t.svc.Tracks.GetAll(queryParams)
+	fmt.Println("RES", res)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
