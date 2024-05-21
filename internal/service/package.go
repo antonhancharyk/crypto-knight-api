@@ -8,9 +8,9 @@ import (
 )
 
 type Common interface {
-	Enable()
-	Disable()
-	GetStatus() bool
+	Enable() error
+	Disable() error
+	GetStatus() (bool, error)
 }
 
 type Tracks interface {

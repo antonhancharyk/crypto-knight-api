@@ -16,7 +16,11 @@ func New(svc *service.Service) *Common {
 }
 
 func (c *Common) GetStatus(ctx *gin.Context) {
-	status := c.svc.GetStatus()
+	status, err := c.svc.GetStatus()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"enabled": status,
@@ -24,11 +28,21 @@ func (c *Common) GetStatus(ctx *gin.Context) {
 }
 
 func (c *Common) Enable(ctx *gin.Context) {
-	c.svc.Enable()
+	err := c.svc.Enable()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	ctx.Status(http.StatusOK)
 }
 
 func (c *Common) Disable(ctx *gin.Context) {
-	c.svc.Disable()
+	err := c.svc.Disable()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	ctx.Status(http.StatusOK)
 }

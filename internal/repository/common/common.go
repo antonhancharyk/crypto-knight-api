@@ -1,8 +1,6 @@
 package common
 
 import (
-	"log"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -18,27 +16,22 @@ func New(db *sqlx.DB) *Common {
 	return &Common{db: db}
 }
 
-func (c *Common) GetStatus() bool {
+func (c *Common) GetStatus() (bool, error) {
 	var commonData []CommonData
 
 	err := c.db.Select(&commonData, "select enabled from common where id = 1")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	return commonData[0].Enabled
+	return commonData[0].Enabled, err
 }
 
-func (c *Common) On() {
+func (c *Common) On() error {
 	_, err := c.db.Exec("update common set enabled = true where id = 1")
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	return err
 }
 
-func (c *Common) Off() {
+func (c *Common) Off() error {
 	_, err := c.db.Exec("update common set enabled = false where id = 1")
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	return err
 }
