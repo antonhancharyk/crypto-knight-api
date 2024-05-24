@@ -3,6 +3,8 @@ package tracks
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 type Tracks struct {
@@ -16,14 +18,14 @@ func New(db *sqlx.DB) *Tracks {
 func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
 	tracksData := []track.Track{}
 
-	err := t.db.Select(&tracksData, "select symbol, high_price, low_price, created_at from tracks where created_at between $1 AND $2 order by created_at desc", queryParams.From, queryParams.To)
+	err := t.db.Select(&tracksData, "select symbol, high_price, low_price, COALESCE(causes, '{}') as causes, created_at from tracks where created_at between $1 AND $2 order by created_at desc", queryParams.From, queryParams.To)
 
 	return tracksData, err
 }
 
 func (t *Tracks) Create(track track.Track) error {
-	_, err := t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price)
-	VALUES ($1, $2, $3)`, track.Symbol, track.HighPrice, track.LowPrice)
+	_, err := t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes)
+	VALUES ($1, $2, $3, $4)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes))
 
 	return err
 }
