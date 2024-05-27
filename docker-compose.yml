@@ -44,6 +44,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    restart: always
     depends_on:
       migrator:
         condition: service_completed_successfully      
