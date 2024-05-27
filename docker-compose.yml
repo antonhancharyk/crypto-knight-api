@@ -33,6 +33,20 @@ services:
       - ./migrations:/migrations
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
+  backup:
+    build:
+      context: ./internal/config/backup
+      dockerfile: Dockerfile
+    volumes:
+      - ./backups:/backups
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully      
+      
   app:
     container_name: app
     image: antgoncharik/crypto-knight-api
