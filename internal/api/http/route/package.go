@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/middleware/cors"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/tracks"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func Init(hdl *handler.Handler) *gin.Engine {
 
 	common.UseRoutes(router, hdl)
 	tracks.UseRoutes(router, hdl)
+	auth.UseRoutes(router, hdl)
 
 	return router
 }

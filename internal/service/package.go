@@ -1,8 +1,10 @@
 package service
 
 import (
+	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
+	authSvc "github.com/antongoncharik/crypto-knight-api/internal/service/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/tracks"
 )
@@ -18,14 +20,20 @@ type Tracks interface {
 	Create(track track.Track) error
 }
 
+type Auth interface {
+	ValidateToken(token string) error
+}
+
 type Service struct {
 	Common
 	Tracks
+	Auth
 }
 
-func New(repo *repository.Repository) *Service {
+func New(repo *repository.Repository, keys auth.RSAKeys) *Service {
 	return &Service{
 		Common: common.New(repo),
 		Tracks: tracks.New(repo),
+		Auth:   authSvc.New(repo, keys),
 	}
 }

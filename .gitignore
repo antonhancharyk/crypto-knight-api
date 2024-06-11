@@ -17,5 +17,6 @@
 # Artefacts
 artefacts/
 .env
+private_key.pem
 
 .vscode/
