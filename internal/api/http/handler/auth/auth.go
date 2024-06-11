@@ -32,5 +32,4 @@ func (a *Auth) ValidateToken(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
-
 }
