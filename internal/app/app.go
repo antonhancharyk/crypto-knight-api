@@ -28,5 +28,5 @@ func Run() {
 	svc := service.New(repo, keys)
 	hdl := handler.New(svc)
 
-	http.RunHTTP(hdl)
+	http.RunHTTP(hdl, keys)
 }

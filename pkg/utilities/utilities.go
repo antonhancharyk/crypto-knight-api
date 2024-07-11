@@ -45,5 +45,5 @@ func ValidateToken(tokenStr string, publicKey *rsa.PublicKey) error {
 		return nil
 	}
 
-	return errors.New("invalId token")
+	return errors.New("invalid token")
 }
