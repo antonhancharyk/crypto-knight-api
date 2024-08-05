@@ -15,9 +15,11 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.UseCORS())
-	router.Use(auth.UseAuth(keys))
 
 	common.UseRoutes(router, hdl)
+
+	router.Use(auth.UseAuth(keys))
+
 	tracks.UseRoutes(router, hdl)
 	authRoutes.UseRoutes(router, hdl)
 

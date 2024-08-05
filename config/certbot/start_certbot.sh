@@ -3,11 +3,11 @@
 trap 'exit 0' TERM
 
 while :; do
-  cert_path="/etc/letsencrypt/live/ssoauth.online/fullchain.pem"
+  cert_path="/etc/letsencrypt/live/api.crypto-knight.online/fullchain.pem"
 
   if [ ! -f $cert_path ]; then
       echo "Certificate not found. Requesting new certificate."
-      certbot certonly --webroot --webroot-path=/var/www/certbot --email ant.goncharik.development@gmail.com --agree-tos --no-eff-email -d ssoauth.online
+      certbot certonly --webroot --webroot-path=/var/www/certbot --email ant.goncharik.development@gmail.com --agree-tos --no-eff-email -d api.crypto-knight.online
   else
       echo "Certificate found. Checking expiry date."
       expiry_date=$(openssl x509 -enddate -noout -in $cert_path | cut -d= -f2)
