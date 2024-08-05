@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -11,6 +12,8 @@ import (
 
 func UseAuth(keys authEntity.RSAKeys) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		botHeader := c.GetHeader("Bot")
+		fmt.Println("botHeader", botHeader)
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization header is required"})
