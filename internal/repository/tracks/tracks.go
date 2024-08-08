@@ -21,12 +21,12 @@ func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
 	tracksData := []track.Track{}
 
 	if queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "WITH unique_tracks AS (select distinct on (symbol, high_price, low_price) symbol, high_price, low_price, COALESCE(causes, '{}') as causes, created_at from tracks where created_at between $1 AND $2 AND symbol = $3 order by symbol, high_price, low_price, created_at asc) SELECT * FROM unique_tracks order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
+		err := t.db.Select(&tracksData, "with unique_tracks as (select distinct on (symbol, high_price, low_price) symbol, high_price, low_price, COALESCE(causes, '{}') as causes, created_at from tracks where created_at between $1 and $2 and symbol = $3 order by symbol, high_price, low_price, created_at asc) select * from unique_tracks order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
 
 		return tracksData, err
 	}
 
-	err := t.db.Select(&tracksData, "select symbol, high_price, low_price, COALESCE(causes, '{}') as causes, created_at from tracks where created_at between $1 AND $2 order by created_at desc", queryParams.From, queryParams.To)
+	err := t.db.Select(&tracksData, "with unique_tracks as (select distinct on (symbol, high_price, low_price) symbol, high_price, low_price, COALESCE(causes, '{}') as causes, created_at from tracks where created_at between $1 and $2 order by symbol, high_price, low_price, created_at asc) select * from unique_tracks order by created_at desc", queryParams.From, queryParams.To)
 
 	return tracksData, err
 }
