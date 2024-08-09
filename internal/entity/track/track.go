@@ -19,4 +19,5 @@ type QueryParams struct {
 	From   string `form:"from"`
 	To     string `form:"to"`
 	Symbol string `form:"symbol"`
+	Full   bool   `form:"full"`
 }
