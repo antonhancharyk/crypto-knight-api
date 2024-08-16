@@ -46,12 +46,12 @@ func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
 func (t *Tracks) Create(track track.Track) error {
 	var err error
 	if (track.CreatedAt == time.Time{}) {
-		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes)
-		VALUES ($1, $2, $3, $4)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes))
+		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes, order)
+		VALUES ($1, $2, $3, $4, $5)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.Order)
 
 	} else {
-		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes, created_at)
-		VALUES ($1, $2, $3, $4, $5)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.CreatedAt)
+		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes, created_at, order)
+		VALUES ($1, $2, $3, $4, $5, $6)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.CreatedAt, track.Order)
 	}
 
 	return err
