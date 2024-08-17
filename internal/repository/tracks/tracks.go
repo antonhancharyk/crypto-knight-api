@@ -47,11 +47,11 @@ func (t *Tracks) Create(track track.Track) error {
 	var err error
 	if (track.CreatedAt == time.Time{}) {
 		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes, is_order)
-		VALUES ($1, $2, $3, $4, $5)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.Order)
+		VALUES ($1, $2, $3, $4, $5)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.IsOrder)
 
 	} else {
 		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, causes, created_at, is_order)
-		VALUES ($1, $2, $3, $4, $5, $6)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.CreatedAt, track.Order)
+		VALUES ($1, $2, $3, $4, $5, $6)`, track.Symbol, track.HighPrice, track.LowPrice, pq.Array(track.Causes), track.CreatedAt, track.IsOrder)
 	}
 
 	return err
