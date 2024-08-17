@@ -1,1 +1,1 @@
-ALTER TABLE tracks ADD COLUMN "order" BOOLEAN;
+ALTER TABLE tracks ADD COLUMN is_order BOOLEAN;

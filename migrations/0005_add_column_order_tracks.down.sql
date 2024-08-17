@@ -1,1 +1,1 @@
-ALTER TABLE tracks DROP COLUMN "order";
+ALTER TABLE tracks DROP COLUMN is_order;
