@@ -4,6 +4,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/tracks"
+	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -29,10 +30,10 @@ type Handler struct {
 	Auth
 }
 
-func New(svc *service.Service) *Handler {
+func New(svc *service.Service, cacheClient *cache.Cache) *Handler {
 	return &Handler{
 		Common: common.New(svc),
-		Tracks: tracks.New(svc),
+		Tracks: tracks.New(svc, cacheClient),
 		Auth:   auth.New(svc),
 	}
 }

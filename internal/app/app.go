@@ -6,6 +6,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
+	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/config"
 	"github.com/antongoncharik/crypto-knight-api/internal/database"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
@@ -24,9 +25,12 @@ func Run() {
 	grpc.Connect()
 	defer grpc.Close()
 
+	cacheClient := cache.Connect()
+	defer cacheClient.Close()
+
 	repo := repository.New(database.Get())
 	svc := service.New(repo, keys)
-	hdl := handler.New(svc)
+	hdl := handler.New(svc, cacheClient)
 
 	http.RunHTTP(hdl, keys)
 }
