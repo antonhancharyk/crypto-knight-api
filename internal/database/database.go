@@ -9,27 +9,20 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var db *sqlx.DB
-
-func Connect() {
+func Connect() *sqlx.DB {
 	connectStr := fmt.Sprintf("user=%s dbname=%s sslmode=disable password=%s host=db", os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
 
-	conn, err := sqlx.Connect("postgres", connectStr)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = conn.Ping()
+	db, err := sqlx.Connect("postgres", connectStr)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	db = conn
-}
+	err = db.Ping()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-func Get() *sqlx.DB {
+	log.Println("DB is running")
+
 	return db
-}
-
-func Close() {
-	db.Close()
 }

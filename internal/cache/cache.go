@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -18,6 +19,9 @@ func Connect() *Cache {
 		Addr: "redis:6379",
 		DB:   0,
 	})
+
+	log.Println("Redis server is running")
+
 	return &Cache{client: rdb}
 }
 
@@ -29,6 +33,6 @@ func (c *Cache) Set(key string, value string, ttl time.Duration) error {
 	return c.client.Set(ctx, key, value, ttl).Err()
 }
 
-func (c *Cache) Close() {
-	c.client.Close()
+func (c *Cache) Close() error {
+	return c.client.Close()
 }

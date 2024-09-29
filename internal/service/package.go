@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
@@ -30,9 +31,9 @@ type Service struct {
 	Auth
 }
 
-func New(repo *repository.Repository, keys auth.RSAKeys) *Service {
+func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients) *Service {
 	return &Service{
-		Common: common.New(repo),
+		Common: common.New(repo, grpcClients),
 		Tracks: tracks.New(repo),
 		Auth:   authSvc.New(repo, keys),
 	}

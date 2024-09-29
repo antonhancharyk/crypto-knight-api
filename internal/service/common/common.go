@@ -9,12 +9,13 @@ import (
 )
 
 type Common struct {
-	repo *repository.Repository
+	repo        *repository.Repository
+	grpcClients *grpc.GRPCClients
 	pbCommon.UnimplementedCommonServiceServer
 }
 
-func New(repo *repository.Repository) *Common {
-	return &Common{repo: repo}
+func New(repo *repository.Repository, grpcClients *grpc.GRPCClients) *Common {
+	return &Common{repo: repo, grpcClients: grpcClients}
 }
 
 func (c *Common) GetStatus() (bool, error) {
@@ -27,7 +28,7 @@ func (c *Common) Enable() error {
 		return err
 	}
 
-	_, err = grpc.Get().Common.Enable(context.Background(), &pbCommon.EmptyRequest{})
+	_, err = c.grpcClients.Common.Enable(context.Background(), &pbCommon.EmptyRequest{})
 
 	return err
 }
@@ -38,7 +39,7 @@ func (c *Common) Disable() error {
 		return err
 	}
 
-	_, err = grpc.Get().Common.Disable(context.Background(), &pbCommon.EmptyRequest{})
+	_, err = c.grpcClients.Common.Disable(context.Background(), &pbCommon.EmptyRequest{})
 
 	return err
 }

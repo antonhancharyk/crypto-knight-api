@@ -14,7 +14,7 @@ type GRPCClients struct {
 var gRPCClients *GRPCClients
 var clientConn *grpc.ClientConn
 
-func Connect() {
+func Connect() (*grpc.ClientConn, *GRPCClients) {
 	conn, err := grpc.Dial("113.30.189.245:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -22,12 +22,8 @@ func Connect() {
 
 	clientConn = conn
 	gRPCClients = &GRPCClients{Common: pbCommon.NewCommonServiceClient(clientConn)}
-}
 
-func Get() *GRPCClients {
-	return gRPCClients
-}
+	log.Println("gRPS client is running")
 
-func Close() {
-	clientConn.Close()
+	return clientConn, gRPCClients
 }
