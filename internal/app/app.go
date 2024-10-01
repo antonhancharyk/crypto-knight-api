@@ -19,23 +19,28 @@ import (
 )
 
 func Run() {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
 	keys, err := config.MustLoad()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	db := database.Connect()
+	defer db.Close()
+
 	grpcClientConn, grpcClients := grpc.Connect()
+	defer grpcClientConn.Close()
+
 	cacheClient := cache.Connect()
+	defer cacheClient.Close()
 
 	repo := repository.New(db)
 	svc := service.New(repo, keys, grpcClients)
 	hdl := handler.New(svc, cacheClient)
 
 	srv := http.RunHTTP(hdl, keys)
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
 
