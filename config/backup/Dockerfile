@@ -12,4 +12,8 @@ RUN chmod 0644 /etc/cron.d/backup-cron
 
 RUN crontab /etc/cron.d/backup-cron
 
-CMD ["cron", "-f"]
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
