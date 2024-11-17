@@ -53,4 +53,5 @@ jobs:
             docker login -u ${{ env.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             docker-compose down
+            docker-compose build --no-cache
             docker-compose up -d
