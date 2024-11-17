@@ -4,6 +4,8 @@ if [ -f /etc/cron.env ]; then
   source /etc/cron.env
 fi
 
+echo "BACKUP"
+
 DB_HOST="db"
 DB_NAME="$POSTGRES_DB"
 DB_USER="$POSTGRES_USER"
