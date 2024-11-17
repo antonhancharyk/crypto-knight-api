@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# if [ -f /etc/cron.env ]; then
-#   source /etc/cron.env
-# fi
-
 DB_HOST="db"
 DB_NAME="$POSTGRES_DB"
 DB_USER="$POSTGRES_USER"
