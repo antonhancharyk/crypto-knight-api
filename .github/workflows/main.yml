@@ -54,4 +54,4 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             docker-compose down
             docker-compose build --no-cache
-            docker-compose up
+            docker-compose up -d
