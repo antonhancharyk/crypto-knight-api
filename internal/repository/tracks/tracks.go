@@ -47,10 +47,10 @@ func (t *Tracks) Create(track track.Track) error {
 	var err error
 	if (track.CreatedAt == time.Time{}) {
 		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, causes, is_order)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 11)`, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrice1, track.LowPrice1, track.HighPrice2, track.LowPrice2, track.HighPrice3, track.LowPrice3, pq.Array(track.Causes), track.IsOrder)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrice1, track.LowPrice1, track.HighPrice2, track.LowPrice2, track.HighPrice3, track.LowPrice3, pq.Array(track.Causes), track.IsOrder)
 	} else {
 		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, causes, created_at, is_order)
-		VALUES ($1, $2, $3, $4, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrice1, track.LowPrice1, track.HighPrice2, track.LowPrice2, track.HighPrice3, track.LowPrice3, pq.Array(track.Causes), track.CreatedAt, track.IsOrder)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrice1, track.LowPrice1, track.HighPrice2, track.LowPrice2, track.HighPrice3, track.LowPrice3, pq.Array(track.Causes), track.CreatedAt, track.IsOrder)
 	}
 
 	return err
