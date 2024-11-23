@@ -33,12 +33,12 @@ func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
 	}
 
 	if queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "with unique_tracks as (select distinct on (symbol, high_price, low_price) symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes, created_at, is_order from tracks where created_at between $1 and $2 and symbol = $3 order by symbol, high_price, low_price, created_at asc) select * from unique_tracks order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
+		err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes,created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price from tracks where created_at between $1 and $2 and symbol = $3) select id, symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes, created_at from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
 
 		return tracksData, err
 	}
 
-	err := t.db.Select(&tracksData, "with unique_tracks as (select distinct on (symbol, high_price, low_price) symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes, created_at, is_order from tracks where created_at between $1 and $2 order by symbol, high_price, low_price, created_at asc) select * from unique_tracks order by created_at desc", queryParams.From, queryParams.To)
+	err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes,created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price from tracks where created_at between $1 and $2) select id, symbol, high_price, low_price, high_price_1, low_price_1, high_price_2, low_price_2, high_price_3, low_price_3, COALESCE(causes, '{}') as causes, created_at from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To)
 
 	return tracksData, err
 }
