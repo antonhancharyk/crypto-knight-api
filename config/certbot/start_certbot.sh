@@ -23,6 +23,11 @@ while :; do
       if [ $diff_seconds -le 2592000 ]; then
           echo "Certificate is expiring in less than 30 days. Renewing."
           certbot renew --deploy-hook "/usr/sbin/nginx -s reload" --disable-hook-validation
+          if [ $? -eq 0 ]; then
+              echo "Certificate renewed successfully and nginx reloaded."
+          else
+              echo "Failed to renew certificate."
+          fi
       else
           echo "Certificate is valid for more than 30 days. No renewal needed."
       fi
