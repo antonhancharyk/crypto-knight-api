@@ -126,12 +126,25 @@ func (t *Tracks) CreateBulk(ctx *gin.Context) {
 	}
 
 	validate := validator.New()
-	err = validate.Struct(tracksData)
-	if err != nil {
-		errors := make(map[string]string)
-		for _, e := range err.(validator.ValidationErrors) {
-			errors[e.Field()] = e.Tag()
+
+	errors := make(map[int]map[string]string)
+	for i, track := range tracksData {
+		err = validate.Struct(track)
+		if err != nil {
+			if validationErrors, ok := err.(validator.ValidationErrors); ok {
+				fieldErrors := make(map[string]string)
+				for _, e := range validationErrors {
+					fieldErrors[e.Field()] = e.Tag()
+				}
+				errors[i] = fieldErrors
+			} else {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": "Validation error occurred"})
+				return
+			}
 		}
+	}
+
+	if len(errors) != 0 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": errors})
 		return
 	}
