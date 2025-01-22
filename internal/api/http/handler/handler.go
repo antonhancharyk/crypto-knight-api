@@ -18,6 +18,7 @@ type Common interface {
 type Tracks interface {
 	GetAll(c *gin.Context)
 	Create(c *gin.Context)
+	CreateBulk(c *gin.Context)
 }
 
 type Auth interface {

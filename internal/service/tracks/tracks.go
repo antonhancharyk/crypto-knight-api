@@ -20,3 +20,7 @@ func (t *Tracks) GetAll(queryParams track.QueryParams) ([]track.Track, error) {
 func (t *Tracks) Create(track track.Track) error {
 	return t.repo.Tracks.Create(track)
 }
+
+func (t *Tracks) CreateBulk(tracks []track.Track) error {
+	return t.repo.Tracks.CreateBulk(tracks)
+}

@@ -10,4 +10,5 @@ func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
 
 	commonGroup.GET("", hdl.Tracks.GetAll)
 	commonGroup.POST("", hdl.Tracks.Create)
+	commonGroup.POST("/bulk", hdl.Tracks.CreateBulk)
 }

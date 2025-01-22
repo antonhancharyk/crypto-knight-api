@@ -1,6 +1,8 @@
 package tracks
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
@@ -51,6 +53,24 @@ func (t *Tracks) Create(track track.Track) error {
 		_, err = t.db.Exec(`INSERT INTO tracks (symbol, high_price, low_price, created_at, is_order, high_created_at, low_created_at, high_prices, low_prices)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, track.Symbol, track.HighPrice, track.LowPrice, track.CreatedAt, track.IsOrder, track.HighCreatedAt, track.LowCreatedAt, track.HighPrices, track.LowPrices)
 	}
+
+	return err
+}
+
+func (t *Tracks) CreateBulk(tracks []track.Track) error {
+	var placeholders []string
+	var values []interface{}
+	for i, track := range tracks {
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*8+1, i*8+2, i*8+3, i*8+4, i*8+5, i*8+6, i*8+7, i*8+8))
+		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.IsOrder, track.HighCreatedAt, track.LowCreatedAt, track.HighPrices, track.LowPrices)
+	}
+
+	query := fmt.Sprintf(`
+		INSERT INTO tracks (symbol, high_price, low_price, is_order, high_created_at, low_created_at, high_prices, low_prices)
+		VALUES %s
+	`, strings.Join(placeholders, ","))
+
+	_, err := t.db.Exec(query, values...)
 
 	return err
 }

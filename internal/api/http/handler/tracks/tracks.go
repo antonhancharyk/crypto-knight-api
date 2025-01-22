@@ -115,3 +115,32 @@ func (t *Tracks) Create(ctx *gin.Context) {
 
 	ctx.Status(http.StatusCreated)
 }
+
+func (t *Tracks) CreateBulk(ctx *gin.Context) {
+	var tracksData []track.Track
+
+	err := ctx.ShouldBindJSON(&tracksData)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	validate := validator.New()
+	err = validate.Struct(tracksData)
+	if err != nil {
+		errors := make(map[string]string)
+		for _, e := range err.(validator.ValidationErrors) {
+			errors[e.Field()] = e.Tag()
+		}
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": errors})
+		return
+	}
+
+	err = t.svc.Tracks.CreateBulk(tracksData)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Status(http.StatusCreated)
+}

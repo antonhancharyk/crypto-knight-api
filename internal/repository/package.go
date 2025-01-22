@@ -16,6 +16,7 @@ type Common interface {
 type Tracks interface {
 	GetAll(queryParams track.QueryParams) ([]track.Track, error)
 	Create(track track.Track) error
+	CreateBulk(tracks []track.Track) error
 }
 
 type Repository struct {
