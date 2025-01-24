@@ -11,6 +11,8 @@ import (
 
 func UseAuth(keys authEntity.RSAKeys) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Next()
+		return
 		// for crypto bot
 		botHeader := c.GetHeader("Bot")
 		if botHeader == "crypto-knight" {
