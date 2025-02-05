@@ -61,16 +61,31 @@ func (t *Tracks) CreateBulk(tracks []track.Track) error {
 	var placeholders []string
 	var values []interface{}
 	for i, track := range tracks {
-		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*10+1, i*10+2, i*10+3, i*10+4, i*10+5, i*10+6, i*10+7, i*10+8, i*10+9, i*10+10))
-		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.IsOrder, track.HighCreatedAt, track.LowCreatedAt, track.HighPrices, track.LowPrices, track.TakeProfitHighPrices, track.TakeProfitLowPrices)
+		if (track.CreatedAt == time.Time{}) {
+			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*10+1, i*10+2, i*10+3, i*10+4, i*10+5, i*10+6, i*10+7, i*10+8, i*10+9, i*10+10))
+			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.IsOrder, track.HighCreatedAt, track.LowCreatedAt, track.HighPrices, track.LowPrices, track.TakeProfitHighPrices, track.TakeProfitLowPrices)
+		} else {
+			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*11+1, i*11+2, i*11+3, i*11+4, i*11+5, i*11+6, i*11+7, i*11+8, i*11+9, i*11+10, i*11+11))
+			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.IsOrder, track.HighCreatedAt, track.LowCreatedAt, track.HighPrices, track.LowPrices, track.TakeProfitHighPrices, track.TakeProfitLowPrices, track.CreatedAt)
+		}
 	}
 
-	query := fmt.Sprintf(`
+	var err error
+	if (tracks[0].CreatedAt == time.Time{}) {
+		query := fmt.Sprintf(`
 		INSERT INTO tracks (symbol, high_price, low_price, is_order, high_created_at, low_created_at, high_prices, low_prices, take_profit_high_prices, take_profit_low_prices)
 		VALUES %s
 	`, strings.Join(placeholders, ","))
 
-	_, err := t.db.Exec(query, values...)
+		_, err = t.db.Exec(query, values...)
+	} else {
+		query := fmt.Sprintf(`
+		INSERT INTO tracks (symbol, high_price, low_price, is_order, high_created_at, low_created_at, high_prices, low_prices, take_profit_high_prices, take_profit_low_prices, created_at)
+		VALUES %s
+	`, strings.Join(placeholders, ","))
+
+		_, err = t.db.Exec(query, values...)
+	}
 
 	return err
 }
