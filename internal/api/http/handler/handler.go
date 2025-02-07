@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/common"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/entries"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/tracks"
 	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
@@ -25,16 +26,23 @@ type Auth interface {
 	ValidateToken(c *gin.Context)
 }
 
+type Entries interface {
+	GetAll(c *gin.Context)
+	Create(c *gin.Context)
+}
+
 type Handler struct {
 	Common
 	Tracks
 	Auth
+	Entries
 }
 
 func New(svc *service.Service, cacheClient *cache.Cache) *Handler {
 	return &Handler{
-		Common: common.New(svc),
-		Tracks: tracks.New(svc, cacheClient),
-		Auth:   auth.New(svc),
+		Common:  common.New(svc),
+		Tracks:  tracks.New(svc, cacheClient),
+		Auth:    auth.New(svc),
+		Entries: entries.New(svc),
 	}
 }

@@ -92,7 +92,7 @@ func (t *Tracks) Create(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&trackData)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid JSON"})
 		return
 	}
 
@@ -121,7 +121,7 @@ func (t *Tracks) CreateBulk(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&tracksData)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid JSON"})
 		return
 	}
 
