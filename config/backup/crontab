@@ -1,1 +1,2 @@
+SHELL=/bin/bash
 1 0 * * * root /usr/local/bin/backup.sh >> /var/log/cron.log 2>&1

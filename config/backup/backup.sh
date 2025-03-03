@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo "Starting backup at $(date)" > /var/log/backup_debug.log
+echo "DB_NAME=$POSTGRES_DB" >> /var/log/backup_debug.log
+echo "DB_USER=$POSTGRES_USER" >> /var/log/backup_debug.log
+echo "DB_PASSWORD=$POSTGRES_PASSWORD" >> /var/log/backup_debug.log
+echo "Executing pg_dump..." >> /var/log/backup_debug.log
+
 DB_HOST="db"
 DB_NAME="$POSTGRES_DB"
 DB_USER="$POSTGRES_USER"
