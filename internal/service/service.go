@@ -4,12 +4,15 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/entry"
+	entity "github.com/antongoncharik/crypto-knight-api/internal/entity/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	authSvc "github.com/antongoncharik/crypto-knight-api/internal/service/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/entries"
+	"github.com/antongoncharik/crypto-knight-api/internal/service/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/tracks"
+	"github.com/antongoncharik/crypto-knight-api/pkg/api"
 )
 
 type Common interface {
@@ -33,18 +36,24 @@ type Entries interface {
 	Create(entry entry.Entry) error
 }
 
+type Position interface {
+	GetPositions() (entity.Positions, error)
+}
+
 type Service struct {
 	Common
 	Tracks
 	Auth
 	Entries
+	Position
 }
 
-func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients) *Service {
+func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients, apiClient *api.HTTPClient) *Service {
 	return &Service{
-		Common:  common.New(repo, grpcClients),
-		Tracks:  tracks.New(repo),
-		Auth:    authSvc.New(repo, keys),
-		Entries: entries.New(repo),
+		Common:   common.New(repo, grpcClients),
+		Tracks:   tracks.New(repo),
+		Auth:     authSvc.New(repo, keys),
+		Entries:  entries.New(repo),
+		Position: position.New(apiClient),
 	}
 }

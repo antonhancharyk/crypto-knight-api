@@ -16,6 +16,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/database"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
+	"github.com/antongoncharik/crypto-knight-api/pkg/api"
 )
 
 func Run() {
@@ -36,8 +37,10 @@ func Run() {
 	cacheClient := cache.Connect()
 	defer cacheClient.Close()
 
+	apiClient := api.New()
+
 	repo := repository.New(db)
-	svc := service.New(repo, keys, grpcClients)
+	svc := service.New(repo, keys, grpcClients, apiClient)
 	hdl := handler.New(svc, cacheClient)
 
 	srv := http.RunHTTP(hdl, keys)

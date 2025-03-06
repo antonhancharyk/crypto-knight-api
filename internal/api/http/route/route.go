@@ -7,6 +7,7 @@ import (
 	authRoutes "github.com/antongoncharik/crypto-knight-api/internal/api/http/route/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/entries"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/tracks"
 	authEntity "github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,7 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	tracks.UseRoutes(router, hdl)
 	authRoutes.UseRoutes(router, hdl)
 	entries.UseRoutes(router, hdl)
+	position.UseRoutes(router, hdl)
 
 	return router
 }

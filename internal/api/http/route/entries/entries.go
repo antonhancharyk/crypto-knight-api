@@ -6,8 +6,8 @@ import (
 )
 
 func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
-	commonGroup := req.Group("/entries")
+	entries := req.Group("/entries")
 
-	commonGroup.GET("", hdl.Entries.GetAll)
-	commonGroup.POST("", hdl.Entries.Create)
+	entries.GET("", hdl.Entries.GetAll)
+	entries.POST("", hdl.Entries.Create)
 }

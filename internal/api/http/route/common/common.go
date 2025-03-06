@@ -6,9 +6,9 @@ import (
 )
 
 func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
-	commonGroup := req.Group("/common")
+	common := req.Group("/common")
 
-	commonGroup.GET("/status", hdl.Common.GetStatus)
-	commonGroup.GET("/on", hdl.Common.Enable)
-	commonGroup.GET("/off", hdl.Common.Disable)
+	common.GET("/status", hdl.Common.GetStatus)
+	common.GET("/on", hdl.Common.Enable)
+	common.GET("/off", hdl.Common.Disable)
 }

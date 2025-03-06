@@ -6,7 +6,7 @@ import (
 )
 
 func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
-	commonGroup := req.Group("/auth")
+	auth := req.Group("/auth")
 
-	commonGroup.GET("/validate", hdl.Auth.ValidateToken)
+	auth.GET("/validate", hdl.Auth.ValidateToken)
 }

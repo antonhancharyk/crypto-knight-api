@@ -1,4 +1,4 @@
-package tracks
+package position
 
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
@@ -6,9 +6,7 @@ import (
 )
 
 func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
-	tracks := req.Group("/tracks")
+	position := req.Group("/position")
 
-	tracks.GET("", hdl.Tracks.GetAll)
-	tracks.POST("", hdl.Tracks.Create)
-	tracks.POST("/bulk", hdl.Tracks.CreateBulk)
+	position.GET("", hdl.Position.GetAll)
 }
