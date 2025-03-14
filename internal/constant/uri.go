@@ -17,4 +17,5 @@ const (
 	TRACKS_BULK_BOT_URI = BASE_API_URI + "/tracks/bulk"
 	ENTRIES_BOT_URI     = BASE_API_URI + "/entries"
 	WSS_BINANCE         = "wss://fstream.binance.com/ws/"
+	USDT                = "USDT"
 )

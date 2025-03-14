@@ -3,11 +3,13 @@ package service
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
+	entityBalance "github.com/antongoncharik/crypto-knight-api/internal/entity/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/entry"
 	entity "github.com/antongoncharik/crypto-knight-api/internal/entity/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	authSvc "github.com/antongoncharik/crypto-knight-api/internal/service/auth"
+	"github.com/antongoncharik/crypto-knight-api/internal/service/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/entries"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/position"
@@ -40,12 +42,17 @@ type Position interface {
 	GetPositions() (entity.Positions, error)
 }
 
+type Balance interface {
+	Get() (entityBalance.Balance, error)
+}
+
 type Service struct {
 	Common
 	Tracks
 	Auth
 	Entries
 	Position
+	Balance
 }
 
 func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients, apiClient *api.HTTPClient) *Service {
@@ -55,5 +62,5 @@ func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCC
 		Auth:     authSvc.New(repo, keys),
 		Entries:  entries.New(repo),
 		Position: position.New(apiClient),
-	}
+		Balance:  balance.New(apiClient)}
 }
