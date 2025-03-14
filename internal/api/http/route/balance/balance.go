@@ -1,4 +1,4 @@
-package position
+package balance
 
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
@@ -6,7 +6,7 @@ import (
 )
 
 func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
-	position := req.Group("/position")
+	balance := req.Group("/balance")
 
-	position.GET("", hdl.Position.GetAll)
+	balance.GET("", hdl.Balance.Get)
 }

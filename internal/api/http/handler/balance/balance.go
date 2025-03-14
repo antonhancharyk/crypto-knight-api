@@ -15,7 +15,7 @@ func New(svc *service.Service) *Balance {
 	return &Balance{svc}
 }
 
-func (r *Balance) GetAll(ctx *gin.Context) {
+func (r *Balance) Get(ctx *gin.Context) {
 	res, err := r.svc.Balance.Get()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

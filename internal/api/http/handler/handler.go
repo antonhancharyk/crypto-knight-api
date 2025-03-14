@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/auth"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/entries"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/position"
@@ -36,12 +37,17 @@ type Position interface {
 	GetAll(c *gin.Context)
 }
 
+type Balance interface {
+	Get(c *gin.Context)
+}
+
 type Handler struct {
 	Common
 	Tracks
 	Auth
 	Entries
 	Position
+	Balance
 }
 
 func New(svc *service.Service, cacheClient *cache.Cache) *Handler {
@@ -51,5 +57,6 @@ func New(svc *service.Service, cacheClient *cache.Cache) *Handler {
 		Auth:     auth.New(svc),
 		Entries:  entries.New(svc),
 		Position: position.New(svc),
+		Balance:  balance.New(svc),
 	}
 }

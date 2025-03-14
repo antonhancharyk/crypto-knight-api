@@ -5,6 +5,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/middleware/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/middleware/cors"
 	authRoutes "github.com/antongoncharik/crypto-knight-api/internal/api/http/route/auth"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/entries"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/position"
@@ -24,6 +25,7 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	authRoutes.UseRoutes(router, hdl)
 	entries.UseRoutes(router, hdl)
 	position.UseRoutes(router, hdl)
+	balance.UseRoutes(router, hdl)
 
 	return router
 }
