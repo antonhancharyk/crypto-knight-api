@@ -35,7 +35,7 @@ func Run() {
 	defer grpcClientConn.Close()
 
 	cacheClient := cache.Connect()
-	defer cacheClient.Close()
+	// defer cacheClient.Close()
 
 	apiClient := api.New()
 
@@ -71,10 +71,10 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	log.Println("Shutting down redis server...")
+	// log.Println("Shutting down redis server...")
 
-	err = cacheClient.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err = cacheClient.Close()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }

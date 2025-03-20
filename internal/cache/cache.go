@@ -15,6 +15,8 @@ type Cache struct {
 var ctx = context.Background()
 
 func Connect() *Cache {
+	return &Cache{}
+
 	rdb := redis.NewClient(&redis.Options{
 		Addr: "redis:6379",
 		DB:   0,
