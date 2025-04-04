@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   db:
@@ -47,8 +47,8 @@ services:
     restart: always
     depends_on:
       migrator:
-        condition: service_completed_successfully      
-      
+        condition: service_completed_successfully
+
   app:
     container_name: app
     image: antgoncharik/crypto-knight-api
@@ -61,7 +61,7 @@ services:
       - ./config/rsa:/opt/app/config/rsa
     depends_on:
       migrator:
-        condition: service_completed_successfully      
+        condition: service_completed_successfully
 
   certbot:
     container_name: certbot
@@ -69,7 +69,7 @@ services:
     volumes:
       - ./certs:/etc/letsencrypt
       - ./certs:/var/www/certbot
-      - ./config/certbot/start_certbot.sh:/start_certbot.sh 
+      - ./config/certbot/start_certbot.sh:/start_certbot.sh
     entrypoint: /start_certbot.sh
     environment:
       - CERTBOT_EMAIL=ant.goncharik.development@gmail.com
@@ -88,6 +88,8 @@ services:
       - ./certs:/var/www/certbot
     depends_on:
       app:
+        condition: service_started
+      certbot:
         condition: service_started
 
   redis:
