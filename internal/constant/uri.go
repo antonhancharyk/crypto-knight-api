@@ -11,7 +11,7 @@ const (
 	SERVER_TIME_URI     = BASE_BINANCE_URI + "/fapi/v1/time"
 	POSITION_RISK_URI   = BASE_BINANCE_URI + "/fapi/v3/positionRisk"
 	USER_TRADE_URI      = BASE_BINANCE_URI + "/fapi/v1/userTrades"
-	BASE_API_URI        = "https://api.crypto-knight.online"
+	BASE_API_URI        = "https://api.crypto-knight.site"
 	STATUS_BOT_URI      = BASE_API_URI + "/common/status"
 	TRACKS_BOT_URI      = BASE_API_URI + "/tracks"
 	TRACKS_BULK_BOT_URI = BASE_API_URI + "/tracks/bulk"

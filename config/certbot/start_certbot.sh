@@ -4,8 +4,8 @@ trap 'exit 0' TERM
 
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-cert_path="/etc/letsencrypt/live/api.crypto-knight.online/fullchain.pem"
-domain="api.crypto-knight.online"
+cert_path="/etc/letsencrypt/live/api.crypto-knight.site/fullchain.pem"
+domain="api.crypto-knight.site"
 email="ant.goncharik.development@gmail.com"
 webroot="/var/www/certbot"
 
