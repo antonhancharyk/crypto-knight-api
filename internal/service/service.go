@@ -12,6 +12,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/service/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/entries"
+	kline "github.com/antongoncharik/crypto-knight-api/internal/service/klines"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/tracks"
 	"github.com/antongoncharik/crypto-knight-api/pkg/api"
@@ -46,6 +47,10 @@ type Balance interface {
 	Get() (entityBalance.Balance, error)
 }
 
+type Kline interface {
+	Get(sbl string) ([][]any, error)
+}
+
 type Service struct {
 	Common
 	Tracks
@@ -53,6 +58,7 @@ type Service struct {
 	Entries
 	Position
 	Balance
+	Kline
 }
 
 func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients, apiClient *api.HTTPClient) *Service {
@@ -62,5 +68,7 @@ func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCC
 		Auth:     authSvc.New(repo, keys),
 		Entries:  entries.New(repo),
 		Position: position.New(apiClient),
-		Balance:  balance.New(apiClient)}
+		Balance:  balance.New(apiClient),
+		Kline:    kline.New(apiClient),
+	}
 }
