@@ -2,7 +2,7 @@ package constant
 
 const (
 	BASE_BINANCE_URI    = "https://fapi.binance.com"
-	KLINES_URI          = BASE_BINANCE_URI + "/fapi/v1/klines"
+	KLINES_URI          = BASE_BINANCE_URI + "/fapi/v1/markPriceKlines"
 	EXCHANGE_INFO_URI   = BASE_BINANCE_URI + "/fapi/v1/exchangeInfo"
 	PRICE_URI           = BASE_BINANCE_URI + "/fapi/v1/ticker/price"
 	ORDER_URI           = BASE_BINANCE_URI + "/fapi/v1/order"
