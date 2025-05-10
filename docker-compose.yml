@@ -5,32 +5,30 @@ services:
     container_name: db
     image: postgres:16
     env_file:
-      - ./.env
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - .env
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   migrator:
     container_name: migrator
     image: migrate/migrate
     env_file:
-      - ./.env
+      - .env
+    volumes:
+      - ./migrations:/migrations
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./migrations:/migrations
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
   backup:
@@ -53,16 +51,16 @@ services:
     container_name: app
     image: antgoncharik/crypto-knight-api
     env_file:
-      - ./.env
-    ports:
-      - "${APP_PORT}:${APP_PORT}"
+      - .env
     restart: always
     volumes:
       - ./config/rsa:/opt/app/config/rsa
     depends_on:
       migrator:
         condition: service_completed_successfully
-
+    expose:
+      - "${APP_PORT}:${APP_PORT}"
+      
   certbot:
     container_name: certbot
     image: certbot/certbot
@@ -75,32 +73,94 @@ services:
       - CERTBOT_EMAIL=ant.goncharik.development@gmail.com
       - CERTBOT_DOMAIN=api.crypto-knight.site
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    expose:
+      - "9200"
+    restart: always
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.4
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./config/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    restart: always
+    ports:
+      - "5000:5000"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    expose:
+      - "5601"
+    restart: always
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus-data:/prometheus
+      - ./config/metrics/prometheus.yml:/etc/prometheus/prometheus.yml
+    expose:
+      - "9090"
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+    expose:
+      - "3000"
+    depends_on:
+      - prometheus
+    restart: always
+
   nginx:
     container_name: nginx
     image: nginx:alpine
     ports:
       - "80:80"
       - "443:443"
-    restart: always
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs
       - ./certs:/var/www/certbot
     depends_on:
-      app:
-        condition: service_started
       certbot:
         condition: service_started
-
-  redis:
-    image: "redis:latest"
-    container_name: "redis"
-    ports:
-      - "6379:6379"
+      app:
+        condition: service_started
+      grafana:
+        condition: service_started
+      kibana:
+        condition: service_started
+      prometheus:
+        condition: service_started
     restart: always
-    volumes:
-      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
 volumes:
   db_data:
+  prometheus-data:
+  grafana-data:
+  elasticsearch-data:
