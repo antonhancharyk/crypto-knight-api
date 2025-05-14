@@ -1,6 +1,8 @@
 package route
 
 import (
+	"net/http"
+
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/middleware/auth"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/middleware/cors"
@@ -18,6 +20,8 @@ import (
 func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	router := gin.Default()
 
+	router.GET("/healthz", healthz)
+
 	router.Use(cors.UseCORS())
 	router.Use(auth.UseAuth(keys))
 
@@ -30,4 +34,10 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	klines.UseRoutes(router, hdl)
 
 	return router
+}
+
+func healthz(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+	})
 }
