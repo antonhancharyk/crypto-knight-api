@@ -37,7 +37,5 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 }
 
 func healthz(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
+	ctx.String(http.StatusOK, "ok")
 }
