@@ -17,6 +17,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/antongoncharik/crypto-knight-api/pkg/api"
+	"github.com/joho/godotenv"
 )
 
 func Run() {
@@ -24,6 +25,11 @@ func Run() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	keys, err := config.MustLoad()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal(err)
 	}

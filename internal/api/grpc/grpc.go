@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"log"
+	"os"
 
 	pbCommon "github.com/antongoncharik/crypto-knight-protos/gen/go/common"
 	"google.golang.org/grpc"
@@ -15,7 +16,7 @@ var gRPCClients *GRPCClients
 var clientConn *grpc.ClientConn
 
 func Connect() (*grpc.ClientConn, *GRPCClients) {
-	conn, err := grpc.Dial("113.30.189.245:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(os.Getenv("GRPC_HOST"), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

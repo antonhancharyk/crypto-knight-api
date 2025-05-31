@@ -29,7 +29,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable up
+    command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
   backup:
     container_name: backup
@@ -54,12 +54,13 @@ services:
       - .env
     restart: always
     volumes:
+      - .env:/opt/app/.env:ro
       - ./config/rsa:/opt/app/config/rsa
     depends_on:
       migrator:
         condition: service_completed_successfully
     expose:
-      - "8080"
+      - "${APP_SERVER_PORT}"
       
   certbot:
     container_name: certbot
