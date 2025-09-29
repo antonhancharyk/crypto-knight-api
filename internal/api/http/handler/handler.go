@@ -8,7 +8,6 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/klines"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler/tracks"
-	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -56,10 +55,10 @@ type Handler struct {
 	Klines
 }
 
-func New(svc *service.Service, cacheClient *cache.Cache) *Handler {
+func New(svc *service.Service) *Handler {
 	return &Handler{
 		Common:   common.New(svc),
-		Tracks:   tracks.New(svc, cacheClient),
+		Tracks:   tracks.New(svc),
 		Auth:     auth.New(svc),
 		Entries:  entries.New(svc),
 		Position: position.New(svc),

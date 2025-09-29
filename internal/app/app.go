@@ -11,7 +11,6 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/grpc"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
-	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/config"
 	"github.com/antongoncharik/crypto-knight-api/internal/database"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
@@ -40,14 +39,11 @@ func Run() {
 	grpcClientConn, grpcClients := grpc.Connect()
 	defer grpcClientConn.Close()
 
-	cacheClient := cache.Connect()
-	// defer cacheClient.Close()
-
 	apiClient := api.New()
 
 	repo := repository.New(db)
 	svc := service.New(repo, keys, grpcClients, apiClient)
-	hdl := handler.New(svc, cacheClient)
+	hdl := handler.New(svc)
 
 	srv := http.RunHTTP(hdl, keys)
 
@@ -76,11 +72,4 @@ func Run() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// log.Println("Shutting down redis server...")
-
-	// err = cacheClient.Close()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 }

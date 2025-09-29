@@ -16,13 +16,13 @@ func New(db *sqlx.DB) *Entries {
 
 func (t *Entries) GetAll() ([]entry.Entry, error) {
 	res := []entry.Entry{}
-	err := t.db.Select(&res, "select distinct on (symbol) symbol, high_price, low_price, created_at from last_entries order by symbol, created_at desc;")
+	err := t.db.Select(&res, "select distinct on (symbol) symbol, high_price, low_price, high_prices, low_prices, created_at from last_entries order by symbol, created_at desc;")
 
 	return res, err
 }
 
 func (t *Entries) Create(entry entry.Entry) error {
-	_, err := t.db.Exec(`insert into last_entries (symbol, high_price, low_price) values ($1, $2, $3)`, entry.Symbol, entry.HighPrice, entry.LowPrice)
+	_, err := t.db.Exec(`insert into last_entries (symbol, high_price, low_price, high_prices, low_prices) values ($1, $2, $3, $4, $5)`, entry.Symbol, entry.HighPrice, entry.LowPrice, entry.HighPrices, entry.LowPrices)
 
 	return err
 }

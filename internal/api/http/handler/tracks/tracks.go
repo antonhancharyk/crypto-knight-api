@@ -1,41 +1,24 @@
 package tracks
 
 import (
-	// "encoding/json"
 	"net/http"
 	"time"
 
-	"github.com/antongoncharik/crypto-knight-api/internal/cache"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	// "github.com/go-redis/redis/v8"
 )
 
 type Tracks struct {
-	svc         *service.Service
-	cacheClient *cache.Cache
+	svc *service.Service
 }
 
-func New(svc *service.Service, cacheClient *cache.Cache) *Tracks {
-	return &Tracks{svc, cacheClient}
+func New(svc *service.Service) *Tracks {
+	return &Tracks{svc}
 }
 
 func (t *Tracks) GetAll(ctx *gin.Context) {
-	// cached, err := t.cacheClient.Get(ctx.Request.URL.String())
-	// if err != redis.Nil {
-	// 	tracks := []track.Track{}
-	// 	err = json.Unmarshal([]byte(cached), &tracks)
-	// 	if err != nil {
-	// 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-	//
-	// 	ctx.JSON(http.StatusOK, tracks)
-	// 	return
-	// }
-
 	var queryParams track.QueryParams
 
 	err := ctx.ShouldBindQuery(&queryParams)
@@ -71,18 +54,6 @@ func (t *Tracks) GetAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	// resBytes, err := json.Marshal(res)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// err = t.cacheClient.Set(ctx.Request.URL.String(), string(resBytes), 10*time.Minute)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	ctx.JSON(http.StatusOK, res)
 }
