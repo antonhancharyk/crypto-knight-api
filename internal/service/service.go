@@ -5,6 +5,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
 	entityBalance "github.com/antongoncharik/crypto-knight-api/internal/entity/balance"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/entry"
+	"github.com/antongoncharik/crypto-knight-api/internal/entity/order"
 	entity "github.com/antongoncharik/crypto-knight-api/internal/entity/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/track"
 	"github.com/antongoncharik/crypto-knight-api/internal/repository"
@@ -13,6 +14,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/service/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/entries"
 	kline "github.com/antongoncharik/crypto-knight-api/internal/service/klines"
+	orderSvc "github.com/antongoncharik/crypto-knight-api/internal/service/order"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/service/tracks"
 	"github.com/antongoncharik/crypto-knight-api/pkg/api"
@@ -43,6 +45,10 @@ type Position interface {
 	GetPositions() (entity.Positions, error)
 }
 
+type Order interface {
+	GetOpenOrders() ([]order.Order, error)
+}
+
 type Balance interface {
 	Get() (entityBalance.Balance, error)
 }
@@ -58,6 +64,7 @@ type Service struct {
 	Entries
 	Position
 	Balance
+	Order
 	Kline
 }
 
@@ -69,6 +76,7 @@ func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCC
 		Entries:  entries.New(repo),
 		Position: position.New(apiClient),
 		Balance:  balance.New(apiClient),
+		Order:    orderSvc.New(apiClient),
 		Kline:    kline.New(apiClient),
 	}
 }

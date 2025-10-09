@@ -11,6 +11,7 @@ import (
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/common"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/entries"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/klines"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/order"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/position"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route/tracks"
 	authEntity "github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
@@ -31,6 +32,7 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 	entries.UseRoutes(router, hdl)
 	position.UseRoutes(router, hdl)
 	balance.UseRoutes(router, hdl)
+	order.UseRoutes(router, hdl)
 	klines.UseRoutes(router, hdl)
 
 	return router
