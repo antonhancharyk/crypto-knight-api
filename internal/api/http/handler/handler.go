@@ -23,6 +23,8 @@ type Tracks interface {
 	GetAll(c *gin.Context)
 	Create(c *gin.Context)
 	CreateBulk(c *gin.Context)
+	GetAllHistory(c *gin.Context)
+	CreateBulkHistory(c *gin.Context)
 }
 
 type Auth interface {

@@ -19,6 +19,8 @@ type Tracks interface {
 	GetAll(queryParams track.QueryParams) ([]track.Track, error)
 	Create(track track.Track) error
 	CreateBulk(tracks []track.Track) error
+	GetAllHistory(queryParams track.QueryParams) ([]track.Track, error)
+	CreateBulkHistory(tracks []track.Track) error
 }
 
 type Entries interface {

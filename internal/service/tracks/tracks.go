@@ -24,3 +24,11 @@ func (t *Tracks) Create(track track.Track) error {
 func (t *Tracks) CreateBulk(tracks []track.Track) error {
 	return t.repo.Tracks.CreateBulk(tracks)
 }
+
+func (t *Tracks) GetAllHistory(queryParams track.QueryParams) ([]track.Track, error) {
+	return t.repo.Tracks.GetAllHistory(queryParams)
+}
+
+func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
+	return t.repo.Tracks.CreateBulkHistory(tracks)
+}

@@ -28,6 +28,7 @@ func Init(hdl *handler.Handler, keys authEntity.RSAKeys) *gin.Engine {
 
 	common.UseRoutes(router, hdl)
 	tracks.UseRoutes(router, hdl)
+	tracks.UseRoutesHistory(router, hdl)
 	authRoutes.UseRoutes(router, hdl)
 	entries.UseRoutes(router, hdl)
 	position.UseRoutes(router, hdl)
