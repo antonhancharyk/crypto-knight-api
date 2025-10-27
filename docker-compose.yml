@@ -61,7 +61,7 @@ services:
         condition: service_completed_successfully
     expose:
       - "${APP_SERVER_PORT}"
-      
+
   certbot:
     container_name: certbot
     image: certbot/certbot

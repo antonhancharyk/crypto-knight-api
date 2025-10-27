@@ -121,10 +121,10 @@ func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
 	var values []interface{}
 	for i, track := range tracks {
 		if (track.CreatedAt == time.Time{}) {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", i*10+1, i*10+2, i*10+3, i*10+4, i*10+5))
+			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", i*5+1, i*5+2, i*5+3, i*5+4, i*5+5))
 			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices)
 		} else {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*11+1, i*11+2, i*11+3, i*11+4, i*11+5, i*11+6))
+			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
 			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt)
 		}
 	}
