@@ -104,6 +104,7 @@ services:
     restart: always
     ports:
       - "5000:5000"
+      - "5044:5044"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
