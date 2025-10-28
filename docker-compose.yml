@@ -103,7 +103,6 @@ services:
       - ./config/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     restart: always
     ports:
-      - "5000:5000"
       - "5044:5044"
 
   kibana:
