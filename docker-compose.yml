@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   db:
-    container_name: db
+    container_name: crypto-knight-api-postgres
     image: postgres:16
     env_file:
       - .env
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   migrator:
-    container_name: migrator
+    container_name: crypto-knight-api-migrator
     image: migrate/migrate
     env_file:
       - .env
@@ -32,7 +32,7 @@ services:
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up
 
   backup:
-    container_name: backup
+    container_name: crypto-knight-api-backup
     build:
       context: ./config/backup
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
         condition: service_completed_successfully
 
   app:
-    container_name: app
+    container_name: crypto-knight-api-app
     image: antgoncharik/crypto-knight-api
     env_file:
       - .env
@@ -63,7 +63,7 @@ services:
       - "${APP_SERVER_PORT}"
 
   certbot:
-    container_name: certbot
+    container_name: crypto-knight-api-certbot
     image: certbot/certbot
     volumes:
       - ./certs:/etc/letsencrypt
@@ -138,7 +138,7 @@ services:
     restart: always
 
   nginx:
-    container_name: nginx
+    container_name: crypto-knight-api-nginx
     image: nginx:alpine
     ports:
       - "80:80"
