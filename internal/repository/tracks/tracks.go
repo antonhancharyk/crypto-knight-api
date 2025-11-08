@@ -148,3 +148,10 @@ func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
 
 	return err
 }
+
+func (t *Tracks) GetLastTracks() ([]track.Track, error) {
+	res := []track.Track{}
+	err := t.db.Select(&res, "select distinct on (symbol) symbol, high_price, low_price, high_prices, low_prices, created_at from tracks order by symbol, created_at desc;")
+
+	return res, err
+}

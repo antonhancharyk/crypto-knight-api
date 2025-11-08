@@ -32,3 +32,7 @@ func (t *Tracks) GetAllHistory(queryParams track.QueryParams) ([]track.Track, er
 func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
 	return t.repo.Tracks.CreateBulkHistory(tracks)
 }
+
+func (t *Tracks) GetLastTracks() ([]track.Track, error) {
+	return t.repo.Tracks.GetLastTracks()
+}

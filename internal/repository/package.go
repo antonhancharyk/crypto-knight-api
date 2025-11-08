@@ -21,6 +21,7 @@ type Tracks interface {
 	CreateBulk(tracks []track.Track) error
 	GetAllHistory(queryParams track.QueryParams) ([]track.Track, error)
 	CreateBulkHistory(tracks []track.Track) error
+	GetLastTracks() ([]track.Track, error)
 }
 
 type Entries interface {

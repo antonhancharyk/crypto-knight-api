@@ -11,6 +11,7 @@ func UseRoutes(req *gin.Engine, hdl *handler.Handler) {
 	tracks.GET("", hdl.Tracks.GetAll)
 	tracks.POST("", hdl.Tracks.Create)
 	tracks.POST("/bulk", hdl.Tracks.CreateBulk)
+	tracks.GET("/last", hdl.Tracks.GetLastTracks)
 }
 
 func UseRoutesHistory(req *gin.Engine, hdl *handler.Handler) {

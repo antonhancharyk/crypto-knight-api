@@ -210,3 +210,13 @@ func (t *Tracks) CreateBulkHistory(ctx *gin.Context) {
 
 	ctx.Status(http.StatusCreated)
 }
+
+func (t *Tracks) GetLastTracks(ctx *gin.Context) {
+	res, err := t.svc.Tracks.GetLastTracks()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}
