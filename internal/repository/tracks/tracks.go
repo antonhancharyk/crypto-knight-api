@@ -61,31 +61,16 @@ func (t *Tracks) CreateBulk(tracks []track.Track) error {
 	var placeholders []string
 	var values []any
 	for i, track := range tracks {
-		if (track.CreatedAt.Equal(time.Time{})) {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", i*5+1, i*5+2, i*5+3, i*5+4, i*5+5))
-			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices)
-		} else {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
-			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt)
-		}
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", i*5+1, i*5+2, i*5+3, i*5+4, i*5+5))
+		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices)
 	}
 
-	var err error
-	if (tracks[0].CreatedAt.Equal(time.Time{})) {
-		query := fmt.Sprintf(`
+	query := fmt.Sprintf(`
 		INSERT INTO tracks (symbol, high_price, low_price, high_prices, low_prices)
 		VALUES %s
 	`, strings.Join(placeholders, ","))
 
-		_, err = t.db.Exec(query, values...)
-	} else {
-		query := fmt.Sprintf(`
-		INSERT INTO tracks (symbol, high_price, low_price, high_prices, low_prices, created_at)
-		VALUES %s
-	`, strings.Join(placeholders, ","))
-
-		_, err = t.db.Exec(query, values...)
-	}
+	_, err := t.db.Exec(query, values...)
 
 	return err
 }
@@ -120,31 +105,16 @@ func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
 	var placeholders []string
 	var values []any
 	for i, track := range tracks {
-		if (track.CreatedAt.Equal(time.Time{})) {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", i*5+1, i*5+2, i*5+3, i*5+4, i*5+5))
-			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices)
-		} else {
-			placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
-			values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt)
-		}
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
+		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt)
 	}
 
-	var err error
-	if (tracks[0].CreatedAt.Equal(time.Time{})) {
-		query := fmt.Sprintf(`
-		INSERT INTO tracks_history (symbol, high_price, low_price, high_prices, low_prices)
-		VALUES %s
-	`, strings.Join(placeholders, ","))
-
-		_, err = t.db.Exec(query, values...)
-	} else {
-		query := fmt.Sprintf(`
+	query := fmt.Sprintf(`
 		INSERT INTO tracks_history (symbol, high_price, low_price, high_prices, low_prices, created_at)
 		VALUES %s
 	`, strings.Join(placeholders, ","))
 
-		_, err = t.db.Exec(query, values...)
-	}
+	_, err := t.db.Exec(query, values...)
 
 	return err
 }
