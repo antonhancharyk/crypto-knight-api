@@ -1,0 +1,1 @@
+ALTER TABLE tracks_history DROP COLUMN interval;

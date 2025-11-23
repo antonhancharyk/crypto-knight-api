@@ -1,0 +1,1 @@
+ALTER TABLE tracks_history ADD COLUMN interval TEXT NOT NULL DEFAULT '1h';

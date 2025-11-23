@@ -79,24 +79,24 @@ func (t *Tracks) GetAllHistory(queryParams track.QueryParams) ([]track.Track, er
 	tracksData := []track.Track{}
 
 	if queryParams.Full && queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, created_at, high_prices, low_prices from tracks_history where created_at between $1 and $2 and symbol = $3 order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
+		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, created_at, high_prices, low_prices from tracks_history where created_at between $1 and $2 and symbol = $3 and interval = $4 order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol, queryParams.Interval)
 
 		return tracksData, err
 	}
 
 	if queryParams.Full && queryParams.Symbol == "" {
-		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, created_at, high_prices, low_prices from tracks_history where created_at between $1 and $2 order by created_at desc", queryParams.From, queryParams.To)
+		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, created_at, high_prices, low_prices from tracks_history where created_at between $1 and $2 and interval = $3 order by created_at desc", queryParams.From, queryParams.To, queryParams.Interval)
 
 		return tracksData, err
 	}
 
 	if queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices from tracks_history where created_at between $1 and $2 and symbol = $3) select symbol, high_price, low_price, created_at, high_prices, low_prices from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol)
+		err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices from tracks_history where created_at between $1 and $2 and symbol = $3 and interval = $4) select symbol, high_price, low_price, created_at, high_prices, low_prices from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol, queryParams.Interval)
 
 		return tracksData, err
 	}
 
-	err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices from tracks_history where created_at between $1 and $2) select symbol, high_price, low_price, created_at, high_prices, low_prices from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To)
+	err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices from tracks_history where created_at between $1 and $2 and interval = $3) select symbol, high_price, low_price, created_at, high_prices, low_prices from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Interval)
 
 	return tracksData, err
 }
@@ -105,12 +105,12 @@ func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
 	var placeholders []string
 	var values []any
 	for i, track := range tracks {
-		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
-		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt)
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*7+1, i*7+2, i*7+3, i*7+4, i*7+5, i*7+6, i*7+7))
+		values = append(values, track.Symbol, track.HighPrice, track.LowPrice, track.HighPrices, track.LowPrices, track.CreatedAt, track.Interval)
 	}
 
 	query := fmt.Sprintf(`
-		INSERT INTO tracks_history (symbol, high_price, low_price, high_prices, low_prices, created_at)
+		INSERT INTO tracks_history (symbol, high_price, low_price, high_prices, low_prices, created_at, interval)
 		VALUES %s
 	`, strings.Join(placeholders, ","))
 

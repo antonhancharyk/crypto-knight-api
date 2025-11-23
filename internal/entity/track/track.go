@@ -19,11 +19,13 @@ type Track struct {
 	LowPrices            pq.Float64Array `json:"low_prices" db:"low_prices"`
 	TakeProfitHighPrices pq.Float64Array `json:"take_profit_high_prices" db:"take_profit_high_prices"`
 	TakeProfitLowPrices  pq.Float64Array `json:"take_profit_low_prices" db:"take_profit_low_prices"`
+	Interval             string          `json:"interval" db:"interval" validate:"required"`
 }
 
 type QueryParams struct {
-	From   string `form:"from"`
-	To     string `form:"to"`
-	Symbol string `form:"symbol"`
-	Full   bool   `form:"full"`
+	From     string `form:"from"`
+	To       string `form:"to"`
+	Symbol   string `form:"symbol"`
+	Full     bool   `form:"full"`
+	Interval string `form:"interval"`
 }
