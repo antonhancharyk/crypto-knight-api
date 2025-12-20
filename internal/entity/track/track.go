@@ -20,6 +20,8 @@ type Track struct {
 	TakeProfitHighPrices pq.Float64Array `json:"take_profit_high_prices" db:"take_profit_high_prices"`
 	TakeProfitLowPrices  pq.Float64Array `json:"take_profit_low_prices" db:"take_profit_low_prices"`
 	Interval             string          `json:"interval" db:"interval" validate:"required"`
+	MiddlePriceHigh      float64         `json:"middle_price_high" db:"middle_price_high"`
+	MiddlePriceLow       float64         `json:"middle_price_low" db:"middle_price_low"`
 }
 
 type QueryParams struct {
