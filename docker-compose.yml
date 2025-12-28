@@ -48,13 +48,10 @@ services:
       - "8080:8080"
     networks:
       - share-net
-      - wg-net
 volumes:
   db_data:
 networks:
   share-net:
-    external: true
-  wg-net:
     external: true
 
   # backup:
