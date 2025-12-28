@@ -17,8 +17,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - share-net
   migrator:
     container_name: crypto-knight-api-migrator
     image: migrate/migrate
@@ -30,8 +28,6 @@ services:
       db:
         condition: service_healthy
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up
-    networks:
-      - share-net
   backend:
     container_name: crypto-knight-api-app
     image: antgoncharik/crypto-knight-api
@@ -45,14 +41,9 @@ services:
       migrator:
         condition: service_completed_successfully
     ports:
-      - "8080:8080"
-    networks:
-      - share-net
+      - "10.10.0.3:8080:8080"
 volumes:
   db_data:
-networks:
-  share-net:
-    external: true
 
   # backup:
   #   container_name: crypto-knight-api-backup
