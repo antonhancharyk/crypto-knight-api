@@ -3,7 +3,6 @@ package http
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/handler"
 	"github.com/antongoncharik/crypto-knight-api/internal/api/http/route"
@@ -13,7 +12,7 @@ import (
 func RunHTTP(hdl *handler.Handler, keys auth.RSAKeys) *http.Server {
 	router := route.Init(hdl, keys)
 	srv := &http.Server{
-		Addr:    ":" + os.Getenv("APP_SERVER_PORT"),
+		Addr:    ":8080",
 		Handler: router,
 	}
 

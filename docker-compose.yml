@@ -1,5 +1,4 @@
-version: "3.7"
-
+version: "3.9"
 services:
   db:
     container_name: crypto-knight-api-postgres
@@ -18,7 +17,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+    networks:
+      - share-net
   migrator:
     container_name: crypto-knight-api-migrator
     image: migrate/migrate
@@ -30,24 +30,9 @@ services:
       db:
         condition: service_healthy
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up
-
-  backup:
-    container_name: crypto-knight-api-backup
-    build:
-      context: ./config/backup
-      dockerfile: Dockerfile
-    volumes:
-      - ./backups:/backups
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    restart: always
-    depends_on:
-      migrator:
-        condition: service_completed_successfully
-
-  app:
+    networks:
+      - share-net
+  backend:
     container_name: crypto-knight-api-app
     image: antgoncharik/crypto-knight-api
     env_file:
@@ -59,109 +44,28 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
-    expose:
-      - "${APP_SERVER_PORT}"
-
-  certbot:
-    container_name: crypto-knight-api-certbot
-    image: certbot/certbot
-    volumes:
-      - ./certs:/etc/letsencrypt
-      - ./certs:/var/www/certbot
-      - ./config/certbot/start_certbot.sh:/start_certbot.sh
-    entrypoint: /start_certbot.sh
-    environment:
-      - CERTBOT_EMAIL=ant.goncharik.development@gmail.com
-      - CERTBOT_DOMAIN=api.crypto-knight.site
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    expose:
-      - "9200"
-    restart: always
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.13.4
-    container_name: logstash
-    depends_on:
-      - elasticsearch
-    volumes:
-      - ./config/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    restart: always
     ports:
-      - "5044:5044"
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.13.4
-    container_name: kibana
-    depends_on:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    expose:
-      - "5601"
-    restart: always
-
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - prometheus-data:/prometheus
-      - ./config/metrics/prometheus.yml:/etc/prometheus/prometheus.yml
-    expose:
-      - "9090"
-    restart: always
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    volumes:
-      - grafana-data:/var/lib/grafana
-    expose:
-      - "3000"
-    depends_on:
-      - prometheus
-    restart: always
-
-  nginx:
-    container_name: crypto-knight-api-nginx
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certs:/etc/nginx/certs
-      - ./certs:/var/www/certbot
-    depends_on:
-      certbot:
-        condition: service_started
-      app:
-        condition: service_started
-      grafana:
-        condition: service_started
-      kibana:
-        condition: service_started
-      prometheus:
-        condition: service_started
-    restart: always
-
+      - "8080:8080"
+    networks:
+      - share-net
 volumes:
   db_data:
-  prometheus-data:
-  grafana-data:
-  elasticsearch-data:
+networks:
+  share-net:
+    external: true
+
+  # backup:
+  #   container_name: crypto-knight-api-backup
+  #   build:
+  #     context: ./config/backup
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./backups:/backups
+  #   environment:
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_DB: ${DB_NAME}
+  #   restart: always
+  #   depends_on:
+  #     migrator:
+  #       condition: service_completed_successfully
