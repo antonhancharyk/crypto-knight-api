@@ -40,8 +40,6 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
-    ports:
-      - "10.10.0.3:8080:8080"
 volumes:
   db_data:
 
