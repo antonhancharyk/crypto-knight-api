@@ -75,30 +75,104 @@ func (t *Tracks) CreateBulk(tracks []track.Track) error {
 	return err
 }
 
-func (t *Tracks) GetAllHistory(queryParams track.QueryParams) ([]track.Track, error) {
-	tracksData := []track.Track{}
+func (t *Tracks) GetAllHistory(q track.QueryParams) ([]track.Track, error) {
+	var (
+		tracks []track.Track
+		args   []any
+	)
 
-	if queryParams.Full && queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, high_prices, low_prices, middle_price_high, middle_price_low, created_at from tracks_history where created_at between $1 and $2 and symbol = $3 and interval = $4 order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol, queryParams.Interval)
+	baseSelect := `
+		select
+			symbol,
+			high_price,
+			low_price,
+			created_at,
+			high_prices,
+			low_prices,
+			middle_price_high,
+			middle_price_low
+	`
 
-		return tracksData, err
+	builder := strings.Builder{}
+
+	if q.Full {
+		builder.WriteString(baseSelect)
+		builder.WriteString(" from tracks_history where created_at between $1 and $2")
+		args = append(args, q.From, q.To)
+
+		argPos := 3
+
+		if q.Symbol != "" {
+			fmt.Fprintf(&builder, " and symbol = $%d", argPos)
+			args = append(args, q.Symbol)
+			argPos++
+		}
+
+		fmt.Fprintf(&builder, " and interval = $%d", argPos)
+		args = append(args, q.Interval)
+		argPos++
+
+		if q.ShowOnlyEntries {
+			builder.WriteString(" and (high_price = 1 or low_price = 1)")
+		}
+
+		builder.WriteString(" order by created_at desc")
+
+		err := t.db.Select(&tracks, builder.String(), args...)
+		return tracks, err
 	}
 
-	if queryParams.Full && queryParams.Symbol == "" {
-		err := t.db.Select(&tracksData, "select symbol, high_price, low_price, high_prices, low_prices, middle_price_high, middle_price_low, created_at from tracks_history where created_at between $1 and $2 and interval = $3 order by created_at desc", queryParams.From, queryParams.To, queryParams.Interval)
+	builder.WriteString(`
+		with ranked_tracks as (
+			select
+				id,
+				symbol,
+				high_price,
+				low_price,
+				created_at,
+				lag(high_price) over (partition by symbol order by created_at) as prev_high_price,
+				lag(low_price)  over (partition by symbol order by created_at) as prev_low_price,
+				high_prices,
+				low_prices,
+				middle_price_high,
+				middle_price_low
+			from tracks_history
+			where created_at between $1 and $2
+	`)
 
-		return tracksData, err
+	args = append(args, q.From, q.To)
+	argPos := 3
+
+	if q.Symbol != "" {
+		fmt.Fprintf(&builder, " and symbol = $%d", argPos)
+		args = append(args, q.Symbol)
+		argPos++
 	}
 
-	if queryParams.Symbol != "" {
-		err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices, middle_price_high, middle_price_low from tracks_history where created_at between $1 and $2 and symbol = $3 and interval = $4) select symbol, high_price, low_price, created_at, high_prices, low_prices, middle_price_high, middle_price_low from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Symbol, queryParams.Interval)
+	fmt.Fprintf(&builder, " and interval = $%d", argPos)
+	args = append(args, q.Interval)
+	argPos++
 
-		return tracksData, err
+	if q.ShowOnlyEntries {
+		builder.WriteString(" and (high_price = 1 or low_price = 1)")
 	}
 
-	err := t.db.Select(&tracksData, "with ranked_tracks as (select id, symbol, high_price, low_price, created_at, lag(high_price) over (partition by symbol order by created_at) as prev_high_price, lag(low_price) over (partition by symbol order by created_at) as prev_low_price, high_prices, low_prices, middle_price_high, middle_price_low from tracks_history where created_at between $1 and $2 and interval = $3) select symbol, high_price, low_price, created_at, high_prices, low_prices, middle_price_high, middle_price_low from ranked_tracks where high_price != prev_high_price or low_price != prev_low_price or prev_high_price is null order by created_at desc", queryParams.From, queryParams.To, queryParams.Interval)
+	builder.WriteString(`
+	)
+	`)
 
-	return tracksData, err
+	builder.WriteString(baseSelect)
+	builder.WriteString(`
+		from ranked_tracks
+		where
+			prev_high_price is null
+			or high_price != prev_high_price
+			or low_price  != prev_low_price
+		order by created_at desc
+	`)
+
+	err := t.db.Select(&tracks, builder.String(), args...)
+	return tracks, err
 }
 
 func (t *Tracks) CreateBulkHistory(tracks []track.Track) error {
