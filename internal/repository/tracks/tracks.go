@@ -77,9 +77,9 @@ func (t *Tracks) CreateBulk(tracks []track.Track) error {
 
 func (t *Tracks) GetAllHistory(q track.QueryParams) ([]track.Track, error) {
 	var (
-		tracks []track.Track
-		args   []any
+		args []any
 	)
+	tracks := make([]track.Track, 0)
 
 	baseSelect := `
 		select
