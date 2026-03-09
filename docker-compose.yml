@@ -1,7 +1,6 @@
 version: "3.9"
 services:
   db:
-    container_name: crypto-knight-api-postgres
     image: postgres:16
     env_file:
       - .env
@@ -18,7 +17,6 @@ services:
       timeout: 5s
       retries: 5
   migrator:
-    container_name: crypto-knight-api-migrator
     image: migrate/migrate
     env_file:
       - .env
@@ -28,35 +26,23 @@ services:
       db:
         condition: service_healthy
     command: -path=/migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up
-  backend:
-    container_name: crypto-knight-api-app
+  app:
     image: antgoncharik/crypto-knight-api
     env_file:
       - .env
     restart: always
     volumes:
-      - .env:/opt/app/.env:ro
-      - ./config/rsa:/opt/app/config/rsa
+      - .env:/app/.env:ro
+      - ./config/rsa:/app/config/rsa:ro
     depends_on:
       migrator:
         condition: service_completed_successfully
     ports:
       - "10.10.0.3:8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
 volumes:
   db_data:
-
-  # backup:
-  #   container_name: crypto-knight-api-backup
-  #   build:
-  #     context: ./config/backup
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./backups:/backups
-  #   environment:
-  #     POSTGRES_USER: ${DB_USER}
-  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
-  #     POSTGRES_DB: ${DB_NAME}
-  #   restart: always
-  #   depends_on:
-  #     migrator:
-  #       condition: service_completed_successfully
