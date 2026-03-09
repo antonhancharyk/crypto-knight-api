@@ -11,12 +11,25 @@ env:
   DOCKERHUB_USERNAME: antgoncharik
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+
+      - name: Run tests
+        run: go test ./...
+
   build_and_push:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build container image and push
         run: |
@@ -27,10 +40,9 @@ jobs:
   # deploy:
   #   runs-on: ubuntu-latest
   #   needs: build_and_push
-
   #   steps:
   #     - name: Checkout main
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v4
 
   #     - name: Copy artefacts
   #       uses: appleboy/scp-action@master
