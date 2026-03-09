@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
         -o app ./cmd/main.go
 # ---------------- RUNTIME STAGE ----------------
 FROM alpine:3.23.3
-RUN apk add --no-cache tini ca-certificates wget
+RUN apk add --no-cache tini ca-certificates curl
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
 COPY --from=builder --chown=app:app /src/app .
