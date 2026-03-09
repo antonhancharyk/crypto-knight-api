@@ -13,11 +13,11 @@ import (
 )
 
 type OrderService struct {
-	api *api.HTTPClient
+	api api.Client
 }
 
-func New(api *api.HTTPClient) *OrderService {
-	return &OrderService{api: api}
+func New(apiClient api.Client) *OrderService {
+	return &OrderService{api: apiClient}
 }
 
 func (p *OrderService) GetOpenOrders() ([]order.Order, error) {

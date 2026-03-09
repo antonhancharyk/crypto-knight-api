@@ -3,31 +3,41 @@ package auth
 import (
 	"net/http"
 
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/response"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/auth"
-	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
+type AuthService interface {
+	ValidateToken(token string) error
+}
+
 type Auth struct {
-	svc *service.Service
+	svc AuthService
 }
 
-func New(svc *service.Service) *Auth {
-	return &Auth{svc}
+func New(svc AuthService) *Auth {
+	return &Auth{svc: svc}
 }
 
+// ValidateToken godoc
+// @Summary      Validate auth token
+// @Tags         auth
+// @Param        token  query  string  true  "JWT token"
+// @Success      200
+// @Failure      400  {object}  response.ErrorResponse
+// @Failure      403  {object}  response.ErrorResponse
+// @Router       /auth/validate [get]
 func (a *Auth) ValidateToken(ctx *gin.Context) {
 	var paramsToken auth.QueryParams
 
-	err := ctx.ShouldBindQuery(&paramsToken)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindQuery(&paramsToken); err != nil {
+		response.Error(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	err = a.svc.ValidateToken(paramsToken.Token)
-	if err != nil {
-		ctx.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	if err := a.svc.ValidateToken(paramsToken.Token); err != nil {
+		response.Error(ctx, http.StatusForbidden, err)
 		return
 	}
 

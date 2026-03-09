@@ -66,13 +66,13 @@ type Handler struct {
 
 func New(svc *service.Service) *Handler {
 	return &Handler{
-		Common:   common.New(svc),
-		Tracks:   tracks.New(svc),
-		Auth:     auth.New(svc),
-		Entries:  entries.New(svc),
-		Position: position.New(svc),
-		Balance:  balance.New(svc),
-		Order:    order.New(svc),
-		Klines:   klines.New(svc),
+		Common:   common.New(svc.Common),
+		Tracks:   tracks.New(svc.Tracks),
+		Auth:     auth.New(svc.Auth),
+		Entries:  entries.New(svc.Entries),
+		Position: position.New(svc.Position),
+		Balance:  balance.New(svc.Balance),
+		Order:    order.New(svc.Order),
+		Klines:   klines.New(svc.Kline),
 	}
 }

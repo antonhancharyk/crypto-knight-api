@@ -1,0 +1,820 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API for crypto-knight trading (tracks, entries, balance, orders, klines).",
+        "title": "Crypto Knight API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/auth/validate": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Validate auth token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/balance": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "balance"
+                ],
+                "summary": "Get USDT balance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_balance.Balance"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/off": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Disable bot",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/on": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Enable bot",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/status": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get bot status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_api_http_handler_common.StatusResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/entries": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "entries"
+                ],
+                "summary": "List all entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "entries"
+                ],
+                "summary": "Create entry",
+                "parameters": [
+                    {
+                        "description": "Entry",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/klines": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "klines"
+                ],
+                "summary": "Get klines for symbol",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Trading pair (e.g. BTCUSDT)",
+                        "name": "symbol",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get open orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_order.Order"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/position": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "position"
+                ],
+                "summary": "Get positions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_position.Positions"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tracks": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks"
+                ],
+                "summary": "List tracks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "From (YYYY-MM-DD HH:MI:SS)",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "To (YYYY-MM-DD HH:MI:SS)",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Symbol",
+                        "name": "symbol",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks"
+                ],
+                "summary": "Create track",
+                "parameters": [
+                    {
+                        "description": "Track",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tracks/bulk": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks"
+                ],
+                "summary": "Create tracks in bulk",
+                "parameters": [
+                    {
+                        "description": "Tracks",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tracks/history": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks-history"
+                ],
+                "summary": "List tracks history",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "From (YYYY-MM-DD HH:MI:SS)",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "To (YYYY-MM-DD HH:MI:SS)",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Symbol",
+                        "name": "symbol",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tracks/history/bulk": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks-history"
+                ],
+                "summary": "Create tracks history in bulk",
+                "parameters": [
+                    {
+                        "description": "Tracks",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tracks/last": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracks"
+                ],
+                "summary": "Get last tracks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {}
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_balance.Balance": {
+            "type": "object",
+            "properties": {
+                "accountAlias": {
+                    "type": "string"
+                },
+                "asset": {
+                    "type": "string"
+                },
+                "availableBalance": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "string"
+                },
+                "crossUnPnl": {
+                    "type": "string"
+                },
+                "crossWalletBalance": {
+                    "type": "string"
+                },
+                "marginAvailable": {
+                    "type": "boolean"
+                },
+                "maxWithdrawAmount": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry": {
+            "type": "object",
+            "required": [
+                "symbol"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "high_price": {
+                    "type": "number"
+                },
+                "high_prices": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "low_price": {
+                    "type": "number"
+                },
+                "low_prices": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_order.Order": {
+            "type": "object",
+            "properties": {
+                "activatePrice": {
+                    "type": "string"
+                },
+                "avgPrice": {
+                    "type": "string"
+                },
+                "clientOrderId": {
+                    "type": "string"
+                },
+                "closePosition": {
+                    "type": "boolean"
+                },
+                "cumQty": {
+                    "type": "string"
+                },
+                "cumQuote": {
+                    "type": "string"
+                },
+                "executedQty": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "integer"
+                },
+                "origQty": {
+                    "type": "string"
+                },
+                "origType": {
+                    "type": "string"
+                },
+                "positionSide": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "priceProtect": {
+                    "type": "boolean"
+                },
+                "priceRate": {
+                    "type": "string"
+                },
+                "reduceOnly": {
+                    "type": "boolean"
+                },
+                "side": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "stopPrice": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "timeInForce": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "integer"
+                },
+                "workingType": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_position.Position": {
+            "type": "object",
+            "properties": {
+                "adl": {
+                    "type": "integer"
+                },
+                "askNotional": {
+                    "type": "string"
+                },
+                "bidNotional": {
+                    "type": "string"
+                },
+                "breakEvenPrice": {
+                    "type": "string"
+                },
+                "entryPrice": {
+                    "type": "string"
+                },
+                "initialMargin": {
+                    "type": "string"
+                },
+                "isolatedMargin": {
+                    "type": "string"
+                },
+                "isolatedWallet": {
+                    "type": "string"
+                },
+                "liquidationPrice": {
+                    "type": "string"
+                },
+                "maintMargin": {
+                    "type": "string"
+                },
+                "marginAsset": {
+                    "type": "string"
+                },
+                "markPrice": {
+                    "type": "string"
+                },
+                "notional": {
+                    "type": "string"
+                },
+                "openOrderInitialMargin": {
+                    "type": "string"
+                },
+                "positionAmt": {
+                    "type": "string"
+                },
+                "positionInitialMargin": {
+                    "type": "string"
+                },
+                "positionSide": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "unRealizedProfit": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_position.Positions": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_position.Position"
+            }
+        },
+        "github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track": {
+            "type": "object",
+            "required": [
+                "interval",
+                "symbol"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "high_price": {
+                    "type": "number"
+                },
+                "high_prices": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "low_price": {
+                    "type": "number"
+                },
+                "low_prices": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "middle_price_high": {
+                    "type": "number"
+                },
+                "middle_price_low": {
+                    "type": "number"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_http_handler_common.StatusResponse": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

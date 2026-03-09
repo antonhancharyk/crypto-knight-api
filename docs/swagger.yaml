@@ -1,0 +1,533 @@
+basePath: /
+definitions:
+  github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse:
+    properties:
+      error: {}
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_balance.Balance:
+    properties:
+      accountAlias:
+        type: string
+      asset:
+        type: string
+      availableBalance:
+        type: string
+      balance:
+        type: string
+      crossUnPnl:
+        type: string
+      crossWalletBalance:
+        type: string
+      marginAvailable:
+        type: boolean
+      maxWithdrawAmount:
+        type: string
+      updateTime:
+        type: integer
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry:
+    properties:
+      created_at:
+        type: string
+      high_price:
+        type: number
+      high_prices:
+        items:
+          type: number
+        type: array
+      low_price:
+        type: number
+      low_prices:
+        items:
+          type: number
+        type: array
+      symbol:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - symbol
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_order.Order:
+    properties:
+      activatePrice:
+        type: string
+      avgPrice:
+        type: string
+      clientOrderId:
+        type: string
+      closePosition:
+        type: boolean
+      cumQty:
+        type: string
+      cumQuote:
+        type: string
+      executedQty:
+        type: string
+      orderId:
+        type: integer
+      origQty:
+        type: string
+      origType:
+        type: string
+      positionSide:
+        type: string
+      price:
+        type: string
+      priceProtect:
+        type: boolean
+      priceRate:
+        type: string
+      reduceOnly:
+        type: boolean
+      side:
+        type: string
+      status:
+        type: string
+      stopPrice:
+        type: string
+      symbol:
+        type: string
+      timeInForce:
+        type: string
+      type:
+        type: string
+      updateTime:
+        type: integer
+      workingType:
+        type: string
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_position.Position:
+    properties:
+      adl:
+        type: integer
+      askNotional:
+        type: string
+      bidNotional:
+        type: string
+      breakEvenPrice:
+        type: string
+      entryPrice:
+        type: string
+      initialMargin:
+        type: string
+      isolatedMargin:
+        type: string
+      isolatedWallet:
+        type: string
+      liquidationPrice:
+        type: string
+      maintMargin:
+        type: string
+      marginAsset:
+        type: string
+      markPrice:
+        type: string
+      notional:
+        type: string
+      openOrderInitialMargin:
+        type: string
+      positionAmt:
+        type: string
+      positionInitialMargin:
+        type: string
+      positionSide:
+        type: string
+      symbol:
+        type: string
+      unRealizedProfit:
+        type: string
+      updateTime:
+        type: integer
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_position.Positions:
+    additionalProperties:
+      $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_position.Position'
+    type: object
+  github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track:
+    properties:
+      created_at:
+        type: string
+      high_price:
+        type: number
+      high_prices:
+        items:
+          type: number
+        type: array
+      interval:
+        type: string
+      low_price:
+        type: number
+      low_prices:
+        items:
+          type: number
+        type: array
+      middle_price_high:
+        type: number
+      middle_price_low:
+        type: number
+      symbol:
+        type: string
+    required:
+    - interval
+    - symbol
+    type: object
+  internal_api_http_handler_common.StatusResponse:
+    properties:
+      enabled:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for crypto-knight trading (tracks, entries, balance, orders, klines).
+  title: Crypto Knight API
+  version: "1.0"
+paths:
+  /auth/validate:
+    get:
+      parameters:
+      - description: JWT token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Validate auth token
+      tags:
+      - auth
+  /balance:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_balance.Balance'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get USDT balance
+      tags:
+      - balance
+  /common/off:
+    get:
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Disable bot
+      tags:
+      - common
+  /common/on:
+    get:
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Enable bot
+      tags:
+      - common
+  /common/status:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_api_http_handler_common.StatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get bot status
+      tags:
+      - common
+  /entries:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: List all entries
+      tags:
+      - entries
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Entry
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_entry.Entry'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Create entry
+      tags:
+      - entries
+  /klines:
+    get:
+      parameters:
+      - description: Trading pair (e.g. BTCUSDT)
+        in: query
+        name: symbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: array
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get klines for symbol
+      tags:
+      - klines
+  /orders:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_order.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get open orders
+      tags:
+      - orders
+  /position:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_position.Positions'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get positions
+      tags:
+      - position
+  /tracks:
+    get:
+      parameters:
+      - description: From (YYYY-MM-DD HH:MI:SS)
+        in: query
+        name: from
+        type: string
+      - description: To (YYYY-MM-DD HH:MI:SS)
+        in: query
+        name: to
+        type: string
+      - description: Symbol
+        in: query
+        name: symbol
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: List tracks
+      tags:
+      - tracks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Track
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Create track
+      tags:
+      - tracks
+  /tracks/bulk:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Tracks
+        in: body
+        name: body
+        required: true
+        schema:
+          type: array
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Create tracks in bulk
+      tags:
+      - tracks
+  /tracks/history:
+    get:
+      parameters:
+      - description: From (YYYY-MM-DD HH:MI:SS)
+        in: query
+        name: from
+        type: string
+      - description: To (YYYY-MM-DD HH:MI:SS)
+        in: query
+        name: to
+        type: string
+      - description: Symbol
+        in: query
+        name: symbol
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: List tracks history
+      tags:
+      - tracks-history
+  /tracks/history/bulk:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Tracks
+        in: body
+        name: body
+        required: true
+        schema:
+          type: array
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Create tracks history in bulk
+      tags:
+      - tracks-history
+  /tracks/last:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_entity_track.Track'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_antongoncharik_crypto-knight-api_internal_api_http_response.ErrorResponse'
+      summary: Get last tracks
+      tags:
+      - tracks
+schemes:
+- http
+swagger: "2.0"

@@ -13,11 +13,11 @@ import (
 )
 
 type PositionService struct {
-	api *api.HTTPClient
+	api api.Client
 }
 
-func New(api *api.HTTPClient) *PositionService {
-	return &PositionService{api: api}
+func New(apiClient api.Client) *PositionService {
+	return &PositionService{api: apiClient}
 }
 
 func (p *PositionService) GetPositions() (entity.Positions, error) {

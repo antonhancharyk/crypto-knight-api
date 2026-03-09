@@ -1,26 +1,36 @@
 package balance
 
 import (
-	"net/http"
-
-	"github.com/antongoncharik/crypto-knight-api/internal/service"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/response"
+	"github.com/antongoncharik/crypto-knight-api/internal/entity/balance"
 	"github.com/gin-gonic/gin"
 )
 
+type BalanceService interface {
+	Get() (balance.Balance, error)
+}
+
 type Balance struct {
-	svc *service.Service
+	svc BalanceService
 }
 
-func New(svc *service.Service) *Balance {
-	return &Balance{svc}
+func New(svc BalanceService) *Balance {
+	return &Balance{svc: svc}
 }
 
+// Get godoc
+// @Summary      Get USDT balance
+// @Tags         balance
+// @Produce      json
+// @Success      200  {object}  balance.Balance
+// @Failure      500  {object}  response.ErrorResponse
+// @Router       /balance [get]
 func (r *Balance) Get(ctx *gin.Context) {
-	res, err := r.svc.Balance.Get()
+	res, err := r.svc.Get()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.WriteError(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	response.OK(ctx, res)
 }

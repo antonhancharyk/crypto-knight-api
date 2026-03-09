@@ -3,31 +3,43 @@ package klines
 import (
 	"net/http"
 
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/response"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/kline"
-	"github.com/antongoncharik/crypto-knight-api/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
+type KlineService interface {
+	Get(sbl string) ([][]any, error)
+}
+
 type Kline struct {
-	svc *service.Service
+	svc KlineService
 }
 
-func New(svc *service.Service) *Kline {
-	return &Kline{svc}
+func New(svc KlineService) *Kline {
+	return &Kline{svc: svc}
 }
 
+// Get godoc
+// @Summary      Get klines for symbol
+// @Tags         klines
+// @Param        symbol  query  string  true  "Trading pair (e.g. BTCUSDT)"
+// @Produce      json
+// @Success      200  {array}   array
+// @Failure      400  {object}  response.ErrorResponse
+// @Failure      500  {object}  response.ErrorResponse
+// @Router       /klines [get]
 func (r *Kline) Get(ctx *gin.Context) {
 	var queryParams kline.QueryParams
 
-	err := ctx.ShouldBindQuery(&queryParams)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindQuery(&queryParams); err != nil {
+		response.Error(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	res, err := r.svc.Kline.Get(queryParams.Symbol)
+	res, err := r.svc.Get(queryParams.Symbol)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.Error(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

@@ -2,7 +2,6 @@ package balance
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -10,16 +9,17 @@ import (
 
 	"github.com/antongoncharik/crypto-knight-api/internal/constant"
 	"github.com/antongoncharik/crypto-knight-api/internal/entity/balance"
+	apperrors "github.com/antongoncharik/crypto-knight-api/internal/errors"
 	"github.com/antongoncharik/crypto-knight-api/pkg/api"
 	"github.com/elliotchance/pie/v2"
 )
 
 type BalanceService struct {
-	api *api.HTTPClient
+	api api.Client
 }
 
-func New(api *api.HTTPClient) *BalanceService {
-	return &BalanceService{api: api}
+func New(apiClient api.Client) *BalanceService {
+	return &BalanceService{api: apiClient}
 }
 
 func (b *BalanceService) Get() (balance.Balance, error) {
@@ -31,20 +31,20 @@ func (b *BalanceService) Get() (balance.Balance, error) {
 
 	res, err := b.api.Get(constant.BALANCE_URI+"?"+params.Encode(), false)
 	if err != nil {
-		return balance.Balance{}, err
+		return balance.Balance{}, apperrors.Upstream(err)
 	}
 
 	data := []balance.Balance{}
 	err = json.Unmarshal(res, &data)
 	if err != nil {
-		return balance.Balance{}, err
+		return balance.Balance{}, apperrors.Upstream(err)
 	}
 
 	i := pie.FindFirstUsing(data, func(val balance.Balance) bool {
 		return val.Asset == constant.USDT
 	})
 	if i == -1 {
-		return balance.Balance{}, errors.New("usdt not found")
+		return balance.Balance{}, apperrors.NotFound("usdt not found")
 	}
 
 	return data[i], nil

@@ -8,10 +8,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/antongoncharik/crypto-knight-api/internal/logger"
 )
 
 const (
@@ -21,13 +22,19 @@ const (
 	DELETE = "DELETE"
 )
 
-type HTTPClient struct {
-	client *http.Client
+type Client interface {
+	Get(url string, isBot bool) ([]byte, error)
+	Post(url string, body []byte, isBot bool) ([]byte, error)
+	Delete(url string, isBot bool) ([]byte, error)
 }
 
-func New() *HTTPClient {
+type HTTPClient struct {
+	httpClient *http.Client
+}
+
+func New() Client {
 	return &HTTPClient{
-		client: &http.Client{
+		httpClient: &http.Client{
 			Timeout: 240 * time.Second,
 		},
 	}
@@ -50,10 +57,16 @@ func (c *HTTPClient) Get(url string, isBot bool) ([]byte, error) {
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("X-MBX-APIKEY", os.Getenv("PUBLIC_API_KEY"))
 
-		res, err := c.client.Do(req)
+		res, err := c.httpClient.Do(req)
 		if err != nil {
 			lastErr = err
-			log.Printf("request failed (attempt %d/%d): %v\n", attempt, maxRetries, err)
+			logger.Log.Warnw(
+				"binance_request_failed",
+				"attempt", attempt,
+				"max_attempts", maxRetries,
+				"error", err,
+				"url", url,
+			)
 
 			if attempt < maxRetries {
 				time.Sleep(retryDelay)
@@ -66,7 +79,13 @@ func (c *HTTPClient) Get(url string, isBot bool) ([]byte, error) {
 		if err != nil {
 			defer res.Body.Close()
 			lastErr = err
-			log.Printf("failed to read response body (attempt %d/%d): %v\n", attempt, maxRetries, err)
+			logger.Log.Warnw(
+				"binance_read_body_failed",
+				"attempt", attempt,
+				"max_attempts", maxRetries,
+				"error", err,
+				"url", url,
+			)
 
 			if attempt < maxRetries {
 				time.Sleep(retryDelay)
@@ -78,7 +97,14 @@ func (c *HTTPClient) Get(url string, isBot bool) ([]byte, error) {
 
 		if res.StatusCode >= 400 {
 			lastErr = errors.New(string(body))
-			log.Printf("request returned status %d (attempt %d/%d): %s\n", res.StatusCode, attempt, maxRetries, string(body))
+			logger.Log.Warnw(
+				"binance_request_bad_status",
+				"status", res.StatusCode,
+				"attempt", attempt,
+				"max_attempts", maxRetries,
+				"body", string(body),
+				"url", url,
+			)
 
 			if attempt < maxRetries {
 				time.Sleep(retryDelay)
@@ -105,7 +131,7 @@ func (c *HTTPClient) Post(url string, body []byte, isBot bool) ([]byte, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-MBX-APIKEY", os.Getenv("PUBLIC_API_KEY"))
 
-	res, err := c.client.Do(req)
+	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +161,7 @@ func (c *HTTPClient) Delete(url string, isBot bool) ([]byte, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-MBX-APIKEY", os.Getenv("PUBLIC_API_KEY"))
 
-	res, err := c.client.Do(req)
+	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -71,7 +71,7 @@ type Service struct {
 	Kline
 }
 
-func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients, apiClient *api.HTTPClient) *Service {
+func New(repo *repository.Repository, keys auth.RSAKeys, grpcClients *grpc.GRPCClients, apiClient api.Client) *Service {
 	return &Service{
 		Common:   common.New(repo, grpcClients),
 		Tracks:   tracks.New(repo),

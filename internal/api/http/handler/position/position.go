@@ -3,24 +3,36 @@ package position
 import (
 	"net/http"
 
-	"github.com/antongoncharik/crypto-knight-api/internal/service"
+	"github.com/antongoncharik/crypto-knight-api/internal/api/http/response"
+	entity "github.com/antongoncharik/crypto-knight-api/internal/entity/position"
 	"github.com/gin-gonic/gin"
 )
 
+type PositionService interface {
+	GetPositions() (entity.Positions, error)
+}
+
 type Position struct {
-	svc *service.Service
+	svc PositionService
 }
 
-func New(svc *service.Service) *Position {
-	return &Position{svc}
+func New(svc PositionService) *Position {
+	return &Position{svc: svc}
 }
 
+// GetAll godoc
+// @Summary      Get positions
+// @Tags         position
+// @Produce      json
+// @Success      200  {object}  entity.Positions
+// @Failure      500  {object}  response.ErrorResponse
+// @Router       /position [get]
 func (r *Position) GetAll(ctx *gin.Context) {
-	res, err := r.svc.Position.GetPositions()
+	res, err := r.svc.GetPositions()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.Error(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	response.OK(ctx, res)
 }

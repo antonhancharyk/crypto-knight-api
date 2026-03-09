@@ -9,11 +9,11 @@ import (
 )
 
 type KlinerService struct {
-	api *api.HTTPClient
+	api api.Client
 }
 
-func New(api *api.HTTPClient) *KlinerService {
-	return &KlinerService{api: api}
+func New(apiClient api.Client) *KlinerService {
+	return &KlinerService{api: apiClient}
 }
 
 func (k *KlinerService) Get(sbl string) ([][]any, error) {
